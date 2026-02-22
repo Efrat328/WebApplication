@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Entities
 {
-    public class Task
+    public class TaskItem
     {
         public int Id { get; set; }
         public int ProjectId { get; set; }

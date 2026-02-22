@@ -17,6 +17,6 @@ namespace Repository.Entities
 
         // קשרים
         public ICollection<Project> Projects { get; set; }
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<TaskItem> Tasks { get; set; }
     }
 }

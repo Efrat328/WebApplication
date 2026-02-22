@@ -15,6 +15,6 @@ namespace Repository.Entities
         public DateTime Deadline { get; set; }
 
         // קשרים
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<TaskItem> Tasks { get; set; }
     }
 }

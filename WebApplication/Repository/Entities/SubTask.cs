@@ -18,7 +18,7 @@ namespace Repository.Entities
         public DateTime CompletedAt { get; set; }
 
         // קשרים
-        public Task Task { get; set; }
+        public TaskItem Task { get; set; }
         public ICollection<History> Histories { get; set; }
     }
 }
