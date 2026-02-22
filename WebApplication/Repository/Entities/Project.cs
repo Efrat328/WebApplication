@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace Repository.Entities
 {
-    public class User
+    public class Project
     {
         public int Id { get; set; }
-        public string NameUser { get; set; }
-        
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public bool IsActive { get; set; }
+        public string NameProject { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public DateTime Deadline { get; set; }
 
         // קשרים
-        public ICollection<Project> Projects { get; set; }
         public ICollection<Task> Tasks { get; set; }
     }
 }
