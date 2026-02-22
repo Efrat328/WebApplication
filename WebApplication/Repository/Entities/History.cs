@@ -14,7 +14,7 @@ namespace Repository.Entities
         public string NewStatus { get; set; }
         public DateTime ChangedAt { get; set; }
 
-        // קשר
+        // connections
         public SubTask SubTask { get; set; }
     }
 }

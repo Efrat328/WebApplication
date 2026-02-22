@@ -19,7 +19,7 @@ namespace Repository.Entities
         public DateTime StartedAt { get; set; }
         public DateTime CompletedAt { get; set; }
 
-        // קשרים
+        // connections
         public Project Project { get; set; }
         public User User { get; set; }
         public ICollection<SubTask> SubTasks { get; set; }

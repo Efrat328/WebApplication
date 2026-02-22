@@ -14,7 +14,7 @@ namespace Repository.Entities
         public string Status { get; set; }
         public DateTime Deadline { get; set; }
 
-        // קשרים
+        // connections
         public ICollection<TaskItem> Tasks { get; set; }
     }
 }

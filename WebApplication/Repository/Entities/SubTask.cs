@@ -17,7 +17,7 @@ namespace Repository.Entities
         public DateTime Deadline { get; set; }
         public DateTime CompletedAt { get; set; }
 
-        // קשרים
+        // connections
         public TaskItem Task { get; set; }
         public ICollection<History> Histories { get; set; }
     }
