@@ -12,7 +12,7 @@ using Service.Interface;
 
 namespace Service.Services
 {
-    public class TaskService : IService<TaskDto>
+    public class TaskService : IService<TaskItemDto>
     {
         private readonly IRepository<TaskItem> _repository;
         private readonly IMapper _mapper;
@@ -22,23 +22,23 @@ namespace Service.Services
             this._repository = repository;
             this._mapper = mapper;
         }
-        public TaskDto AddItem(TaskDto item)
+        public TaskItemDto AddItem(TaskItemDto item)
         {
-            return _mapper.Map<TaskDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));
+            return _mapper.Map<TaskItemDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));
         }
         public void DeleteItem(int id)
         {
             _repository.DeleteItem(id);
         }
-        public List<TaskDto> GetAll()
+        public List<TaskItemDto> GetAll()
         {
-            return _mapper.Map<List<TaskDto>>(_repository.GetAll());
+            return _mapper.Map<List<TaskItemDto>>(_repository.GetAll());
         }
-        public TaskDto GetById(int id)
+        public TaskItemDto GetById(int id)
         {
-            return _mapper.Map<TaskDto>(_repository.GetById(id));
+            return _mapper.Map<TaskItemDto>(_repository.GetById(id));
         }
-        public void UpdateItem(int id, TaskDto item)
+        public void UpdateItem(int id, TaskItemDto item)
         {
             _repository.UpdateItem(id, _mapper.Map<TaskItem>(item));
         }
