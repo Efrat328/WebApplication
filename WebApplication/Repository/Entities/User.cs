@@ -15,7 +15,7 @@ namespace Repository.Entities
         public string Password { get; set; }
         public bool IsActive { get; set; }
 
-        // קשרים
+        // connections
         public ICollection<Project> Projects { get; set; }
         public ICollection<TaskItem> Tasks { get; set; }
     }
