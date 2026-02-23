@@ -27,6 +27,11 @@ namespace Service.Services
             if (item == null) throw new ArgumentNullException("item");
             List<UserDto> users = new List<UserDto>();
             users = GetAll();
+            foreach (UserDto user in users)
+            {
+                if (user.Email == item.Email)
+                    throw new Exception();
+            }
             return _mapper.Map<UserDto>(_repository.AddItem(_mapper.Map<User>(item)));
         }
         public void DeleteItem(int id)
