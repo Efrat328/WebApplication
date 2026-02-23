@@ -7,6 +7,8 @@ using Service.Dto;
 using Service.Interface;
 using Service.Services;
 using Service;
+using Microsoft.EntityFrameworkCore;
+using Repository.Repositories;
 
 var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,9 @@ builder.Services.AddScoped<IService<TaskItemDto>, TaskService>();
 builder.Services.AddScoped<IService<SubTaskDto>, SubTaskService>();
 builder.Services.AddScoped<IService<HistoryDto>, HistoryService>();
 builder.Services.AddControllers();
+builder.Services.AddDbContext<TaskManagerContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IContext, TaskManagerContext>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
