@@ -30,7 +30,7 @@ namespace Service.Services
             foreach (UserDto user in users)
             {
                 if (user.Email == item.Email)
-                    throw new Exception();
+                    throw new Exception("The email is already exists");
             }
             return _mapper.Map<UserDto>(_repository.AddItem(_mapper.Map<User>(item)));
         }
