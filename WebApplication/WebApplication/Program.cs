@@ -1,6 +1,8 @@
-global using Microsoft.AspNetCore.Builder;using Repository.Entities;
-using Repository.Interfaces;
+global using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Repository.Repositories;
+using Repository.Entities;
+using Repository.Interfaces;
 using Service.Dto;
 using Service.Interface;
 using Service.Services;
@@ -27,6 +29,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<TaskManagerContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IContext, TaskManagerContext>();
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MyMapper>());
 var app = builder.Build();
 
