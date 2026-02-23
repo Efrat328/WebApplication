@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
-using Repository.Entities;
+
 
 namespace Repository.Interfaces
 {
