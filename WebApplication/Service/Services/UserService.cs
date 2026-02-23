@@ -24,6 +24,9 @@ namespace Service.Services
         }
         public UserDto AddItem(UserDto item)
         {
+            if (item == null) throw new ArgumentNullException("item");
+            List<UserDto> users = new List<UserDto>();
+            users = GetAll();
             return _mapper.Map<UserDto>(_repository.AddItem(_mapper.Map<User>(item)));
         }
         public void DeleteItem(int id)
