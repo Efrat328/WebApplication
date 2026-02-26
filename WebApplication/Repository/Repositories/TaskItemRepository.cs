@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 using Repository.Interfaces;
 
@@ -27,10 +27,15 @@ namespace Repository.Repositories
             _context.Tasks.ToList().Remove(GetById(id));
             _context.Save();
         }
+
         public List<TaskItem> GetAll()
         {
-            return _context.Tasks.ToList();
+            return _context.Tasks
+                .Include(t => t.Project)
+                .Include(t => t.User)
+                .ToList();
         }
+       
         public TaskItem GetById(int id)
         {
             return _context.Tasks.ToList().FirstOrDefault(x => x.Id == id);
