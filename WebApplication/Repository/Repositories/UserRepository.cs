@@ -24,11 +24,13 @@ namespace Repository.Repositories
         public void DeleteItem(int id)
         {
 
+
             User u = _context.Users.FirstOrDefault(u => u.Id == id);
             if (u != null)
             {
                 u.IsActive = false;
             }
+
             _context.Save();
         }
         public List<User> GetAll()
