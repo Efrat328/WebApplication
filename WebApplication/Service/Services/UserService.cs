@@ -39,7 +39,7 @@ namespace Service.Services
             User user = _repository.GetById(id);
             if (user == null) throw new ArgumentNullException(nameof(id));
             user.IsActive = false;
-            _repository.UpdateItem(user.Id, user);
+            _repository.UpdateItem( user);
 
         }
         public List<UserDto> GetAll()
@@ -52,20 +52,19 @@ namespace Service.Services
         }
         public void UpdateItem(int id, UserDto item)
         {
-            User user = GetById(id);
+            User user = _repository.GetById(id);
             if (user != null)
             {
 
                 user.NameUser = item.NameUser;
                 user.Email = item.Email;
                 user.Password = item.Password;
-                _context.Save();
             }
             else
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            _repository.UpdateItem(id, _mapper.Map<User>(item));
+            _repository.UpdateItem( _mapper.Map<User>(item));
         }
     }
 }

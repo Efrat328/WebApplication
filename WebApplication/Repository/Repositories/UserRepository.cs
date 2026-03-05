@@ -31,9 +31,10 @@ namespace Repository.Repositories
                 throw new ArgumentNullException(nameof(id));
             return _context.Users.ToList().FirstOrDefault(x => x.Id == id);
         }
-        public void UpdateItem(int id, User item)
+        public void UpdateItem( User item)
         {
-            
+            _context.Users.Update(item);
+            _context.Save();
         }
     }
 }

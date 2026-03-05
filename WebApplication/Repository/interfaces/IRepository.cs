@@ -9,7 +9,7 @@ namespace Repository.Interfaces
     public interface IRepository<T> : IRepositoryParent<T>
     {
         T GetById(int id);
-        void UpdateItem(int id, T item);
-        void DeleteItem(int id);
+        void UpdateItem( T item);
+        
     }
 }
