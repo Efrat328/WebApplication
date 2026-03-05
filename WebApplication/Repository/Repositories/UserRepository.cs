@@ -21,18 +21,6 @@ namespace Repository.Repositories
             _context.Save();
             return item;
         }
-        public void DeleteItem(int id)
-        {
-
-
-            User u = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (u != null)
-            {
-                u.IsActive = false;
-            }
-
-            _context.Save();
-        }
         public List<User> GetAll()
         {
             return _context.Users.ToList();
@@ -45,19 +33,7 @@ namespace Repository.Repositories
         }
         public void UpdateItem(int id, User item)
         {
-            User user = GetById(id);
-            if (user != null)
-            {
-
-                user.NameUser = item.NameUser;
-                user.Email = item.Email;
-                user.Password = item.Password;
-                _context.Save();
-            }
-            else
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            
         }
     }
 }
