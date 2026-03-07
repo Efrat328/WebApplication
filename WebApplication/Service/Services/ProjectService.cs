@@ -9,6 +9,7 @@ using Repository.Entities;
 using Repository.Interfaces;
 using Service.Dto;
 using Service.Interface;
+ 
 
 namespace Service.Services
 {
@@ -38,7 +39,7 @@ namespace Service.Services
         {
             Project project = _repository.GetById(id);
             if (project == null) throw new ArgumentNullException(nameof(id));
-            project.Status = Canceled;
+            project.Status = ProjectStatus.Canceled;
             _repository.UpdateItem(project);
            
         }
@@ -52,7 +53,7 @@ namespace Service.Services
         }
         public void UpdateItem(int id, ProjectDto item)
         {
-            _repository.UpdateItem(id, _mapper.Map<Project>(item));
+            _repository.UpdateItem( _mapper.Map<Project>(item));
         }
     }
 }

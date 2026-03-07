@@ -28,7 +28,7 @@ namespace Service.Services
         }
         public void DeleteItem(int id)
         {
-            _repository.DeleteItem(id);
+            //_repository.DeleteItem(id);
         }
         public List<HistoryDto> GetAll()
         {
@@ -40,7 +40,7 @@ namespace Service.Services
         }
         public void UpdateItem(int id, HistoryDto item)
         {
-            _repository.UpdateItem(id, _mapper.Map<History>(item));
+            _repository.UpdateItem( _mapper.Map<History>(item));
         }
     }
 }

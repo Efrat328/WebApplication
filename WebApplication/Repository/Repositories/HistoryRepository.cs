@@ -35,12 +35,18 @@ namespace Repository.Repositories
         {
             return _context.Histories.ToList().FirstOrDefault(x => x.Id == id);
         }
-        public void UpdateItem(int id, History item)
+
+        /* public void UpdateItem(int id, History item)
+         {
+             var history = GetById(id);
+             history.OldStatus = item.OldStatus;
+             history.NewStatus = item.NewStatus;
+             history.ChangedAt = item.ChangedAt;
+             _context.Save();
+         }*/
+        public void UpdateItem(History item)
         {
-            var history = GetById(id);
-            history.OldStatus = item.OldStatus;
-            history.NewStatus = item.NewStatus;
-            history.ChangedAt = item.ChangedAt;
+            _context.Histories.Update(item);
             _context.Save();
         }
     }

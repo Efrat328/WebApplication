@@ -21,6 +21,14 @@ namespace Repository.Repositories
         public DbSet<SubTask> SubTasks { get; set; }
         public DbSet<History> Histories { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SubTask>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.Id)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
         public void Save()
         {
             SaveChanges();

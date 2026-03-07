@@ -40,14 +40,19 @@ namespace Repository.Repositories
         {
             return _context.Tasks.ToList().FirstOrDefault(x => x.Id == id);
         }
-        public void UpdateItem(int id, TaskItem item)
+        //public void UpdateItem(int id, TaskItem item)
+        //{
+        //    var task = GetById(id);
+        //    task.Title = item.Title;
+        //    task.Description = item.Description;
+        //    task.Status = item.Status;
+        //    task.Priority = item.Priority;
+        //    task.Deadline = item.Deadline;
+        //    _context.Save();
+        //}
+        public void UpdateItem(TaskItem item)
         {
-            var task = GetById(id);
-            task.Title = item.Title;
-            task.Description = item.Description;
-            task.Status = item.Status;
-            task.Priority = item.Priority;
-            task.Deadline = item.Deadline;
+            _context.Tasks.Update(item);
             _context.Save();
         }
     }
