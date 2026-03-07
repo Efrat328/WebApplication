@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace Repository.Entities
 {
+    public enum TaskStatus
+    {
+        Open,
+        InProgress,
+        Completed,
+        Canceled
+    }
     public class TaskItem
     {
         public int Id { get; set; }
@@ -14,7 +21,7 @@ namespace Repository.Entities
         public string Description { get; set; }
         public int AssignedTo { get; set; }
         public string Priority { get; set; }
-        public string Status { get; set; }
+        public TaskStatus Status { get; set; }
         public DateTime Deadline { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime CompletedAt { get; set; }
