@@ -15,6 +15,7 @@ namespace Service.Dto
         public string AssignedTo { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }
+        public DateTime StartedAt { get; set; }
         public DateTime Deadline { get; set; }
     }
 }
