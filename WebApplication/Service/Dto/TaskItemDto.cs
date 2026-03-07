@@ -12,6 +12,8 @@ namespace Service.Dto
         public string Title { get; set; }
         public string Description { get; set; }
         public string AssignedTo { get; set; }
+        public int AssignedToId { get; set; }   // for save (FK)
+
         public string Priority { get; set; }
         public string Status { get; set; }
         public DateTime StartedAt { get; set; }
