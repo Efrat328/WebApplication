@@ -24,11 +24,23 @@ namespace Service.Services
         }
         public ProjectDto AddItem(ProjectDto item)
         {
+            if (item == null) throw new ArgumentNullException("item");
+            List<ProjectDto> projects = new List<ProjectDto>();
+            projects = GetAll();
+            foreach (ProjectDto project in projects)
+            {
+                if (project.NameProject == item.NameProject)
+                    throw new Exception("This project is already exists");
+            }
             return _mapper.Map<ProjectDto>(_repository.AddItem(_mapper.Map<Project>(item)));
         }
         public void DeleteItem(int id)
         {
-            _repository.DeleteItem(id);
+            Project project = _repository.GetById(id);
+            if (project == null) throw new ArgumentNullException(nameof(id));
+            project.Status = Canceled;
+            _repository.UpdateItem(project);
+           
         }
         public List<ProjectDto> GetAll()
         {
