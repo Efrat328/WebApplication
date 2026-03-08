@@ -22,11 +22,7 @@ namespace Repository.Repositories
             _context.Save();
             return item;
         }
-        public void DeleteItem(int id)
-        {
-            _context.Projects.ToList().Remove(GetById(id));
-            _context.Save();
-        }
+       
         public List<Project> GetAll()
         {
             return _context.Projects.ToList();
@@ -35,15 +31,6 @@ namespace Repository.Repositories
         {
             return _context.Projects.ToList().FirstOrDefault(x => x.Id == id);
         }
-        //public void UpdateItem(int id, Project item)
-        //{
-        //    var project = GetById(id);
-        //    project.NameProject = item.NameProject;
-        //    project.Description = item.Description;
-        //    project.Status = item.Status;
-        //    project.Deadline = item.Deadline;
-        //    _context.Save();
-        //}
         public void UpdateItem(Project item)
         {
             _context.Projects.Update(item);

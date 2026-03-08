@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Repository.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Service.Dto
         public string Title { get; set; }
         public string Description { get; set; }
         public string AssignedTo { get; set; }
-        public string Status { get; set; }
+        public SubTaskStatus Status { get; set; }
         public DateTime Deadline { get; set; }
     }
 }

@@ -24,11 +24,22 @@ namespace Service.Services
         }
         public SubTaskDto AddItem(SubTaskDto item)
         {
+            if (item == null) throw new ArgumentNullException("item");
+            List<SubTaskDto> subTasks = new List<SubTaskDto>();
+            subTasks = GetAll();
+            foreach (SubTaskDto subTask in subTasks)
+            {
+                if (subTask.Title == item.Title)
+                    throw new Exception("This subTask is already exists");
+            }
             return _mapper.Map<SubTaskDto>(_repository.AddItem(_mapper.Map<SubTask>(item)));
         }
         public void DeleteItem(int id)
         {
-           // _repository.DeleteItem(id);
+            SubTask subTask = _repository.GetById(id);
+            if (subTask == null) throw new ArgumentNullException(nameof(id));
+            subTask.Status = SubTaskStatus.Canceled;
+            _repository.UpdateItem(subTask);
         }
         public List<SubTaskDto> GetAll()
         {
@@ -36,10 +47,25 @@ namespace Service.Services
         }
         public SubTaskDto GetById(int id)
         {
+            if(id==null) throw new ArgumentNullException(nameof(id));
             return _mapper.Map<SubTaskDto>(_repository.GetById(id));
         }
         public void UpdateItem(int id, SubTaskDto item)
         {
+            SubTask subTask = _repository.GetById(id);
+            if (subTask != null)
+            {
+                subTask.Title = item.Title;
+                subTask.Description = item.Description;
+                subTask.AssignedTo = item.AssignedTo;
+                subTask.Deadline = item.Deadline;
+                subTask.Status = item.Status;
+
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
             _repository.UpdateItem( _mapper.Map<SubTask>(item));
         }
     }

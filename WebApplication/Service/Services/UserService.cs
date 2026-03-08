@@ -64,7 +64,7 @@ namespace Service.Services
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            _repository.UpdateItem( _mapper.Map<User>(item));
+            _repository.UpdateItem( _mapper.Map<User>(user));
         }
     }
 }
