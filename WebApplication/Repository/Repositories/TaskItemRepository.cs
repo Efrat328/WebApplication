@@ -38,7 +38,9 @@ namespace Repository.Repositories
        
         public TaskItem GetById(int id)
         {
-            return _context.Tasks.ToList().FirstOrDefault(x => x.Id == id);
+            return _context.Tasks
+            .Include(t => t.SubTasks)
+            .FirstOrDefault(x => x.Id == id);
         }
         //public void UpdateItem(int id, TaskItem item)
         //{

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskStatus = Repository.Entities.TaskStatus;
+
 
 namespace Service.Dto
 {
@@ -15,7 +17,7 @@ namespace Service.Dto
         public int AssignedToId { get; set; }   // for save (FK)
 
         public string Priority { get; set; }
-        public string Status { get; set; }
+        public TaskStatus Status { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime Deadline { get; set; }
     }
