@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskStatus = Repository.Entities.TaskStatus;
+
+
 
 using AutoMapper;
 using Repository.Entities;
@@ -32,15 +35,19 @@ namespace Service.Services
                 if (taskItem.Title == item.Title)
                     throw new Exception("The Title is already exists");
             }
-            item= DateTime.Now;
+            item.StartedAt= DateTime.Now;
             return _mapper.Map<TaskItemDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));       
         }
        public void DeleteItem(int id)
         {
             TaskItem taskItem = _repository.GetById(id);
             if (taskItem == null) throw new ArgumentNullException(nameof(id));
-            taskItem.Status = false;
-            _repository.UpdateItem( user);
+            foreach (var subTask in taskItem.SubTasks)
+            {
+                subTask.Status = SubTaskStatus.Canceled;
+            }
+            taskItem.Status = TaskStatus.Canceled;
+            _repository.UpdateItem( taskItem);
         }
         public List<TaskItemDto> GetAll()
         {
@@ -53,19 +60,22 @@ namespace Service.Services
         public void UpdateItem(int id, TaskItemDto item)
         {
             TaskItem taskItem = _repository.GetById(id);
-            if (taskItem != null)
-            {
-
-                taskItem.Description = item.Description;
-                taskItem.AssignedTo = item.AssignedTo;
-                taskItem.CompletedAt = item.CompletedAt;
-            }
-            else
+            if (taskItem == null)
             {
                 throw new ArgumentNullException(nameof(id));
+
             }
-            
-            _repository.UpdateItem(_mapper.Map<TaskItem>(item));
+            taskItem.Description = item.Description;
+            taskItem.AssignedTo = item.AssignedToId;  // int מה-DTO
+            taskItem.Title = item.Title;
+            taskItem.Status = item.Status;
+            taskItem.Priority = item.Priority;
+            taskItem.Deadline = item.Deadline;
+            if (taskItem.Status == TaskStatus.Completed)
+            {
+                taskItem.CompletedAt = DateTime.Now;
+                _repository.UpdateItem(taskItem);
+            }
         }
     }
 }
