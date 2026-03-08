@@ -58,7 +58,6 @@ namespace Service.Services
 
                 taskItem.Description = item.Description;
                 taskItem.AssignedTo = item.AssignedTo;
-                taskItem.CompletedAt = item.CompletedAt;
             }
             else
             {
