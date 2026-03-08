@@ -28,7 +28,7 @@ namespace Service.Services
         }
         public void DeleteItem(int id)
         {
-            _repository.DeleteItem(id);
+           // _repository.DeleteItem(id);
         }
         public List<SubTaskDto> GetAll()
         {
@@ -40,7 +40,7 @@ namespace Service.Services
         }
         public void UpdateItem(int id, SubTaskDto item)
         {
-            _repository.UpdateItem(id, _mapper.Map<SubTask>(item));
+            _repository.UpdateItem( _mapper.Map<SubTask>(item));
         }
     }
 }

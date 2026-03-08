@@ -35,13 +35,18 @@ namespace Repository.Repositories
         {
             return _context.Projects.ToList().FirstOrDefault(x => x.Id == id);
         }
-        public void UpdateItem(int id, Project item)
+        //public void UpdateItem(int id, Project item)
+        //{
+        //    var project = GetById(id);
+        //    project.NameProject = item.NameProject;
+        //    project.Description = item.Description;
+        //    project.Status = item.Status;
+        //    project.Deadline = item.Deadline;
+        //    _context.Save();
+        //}
+        public void UpdateItem(Project item)
         {
-            var project = GetById(id);
-            project.NameProject = item.NameProject;
-            project.Description = item.Description;
-            project.Status = item.Status;
-            project.Deadline = item.Deadline;
+            _context.Projects.Update(item);
             _context.Save();
         }
     }

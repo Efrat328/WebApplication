@@ -32,15 +32,15 @@ namespace Service.Services
                 if (taskItem.Title == item.Title)
                     throw new Exception("The Title is already exists");
             }
-            item.StartedAt= DateTime.Now;
+            item= DateTime.Now;
             return _mapper.Map<TaskItemDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));       
         }
        public void DeleteItem(int id)
         {
             TaskItem taskItem = _repository.GetById(id);
             if (taskItem == null) throw new ArgumentNullException(nameof(id));
-            //taskItem.Status = Canceled;
-            _repository.UpdateItem( taskItem);
+            taskItem.Status = false;
+            _repository.UpdateItem( user);
         }
         public List<TaskItemDto> GetAll()
         {

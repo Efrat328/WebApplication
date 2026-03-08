@@ -35,13 +35,18 @@ namespace Repository.Repositories
         {
             return _context.SubTasks.ToList().FirstOrDefault(x => x.Id == id);
         }
-        public void UpdateItem(int id, SubTask item)
+        //public void UpdateItem(int id, SubTask item)
+        //{
+        //    var subTask = GetById(id);
+        //    subTask.Title = item.Title;
+        //    subTask.Description = item.Description;
+        //    subTask.Status = item.Status;
+        //    subTask.Deadline = item.Deadline;
+        //    _context.Save();
+        //}
+        public void UpdateItem(SubTask item)
         {
-            var subTask = GetById(id);
-            subTask.Title = item.Title;
-            subTask.Description = item.Description;
-            subTask.Status = item.Status;
-            subTask.Deadline = item.Deadline;
+            _context.SubTasks.Update(item);
             _context.Save();
         }
     }
