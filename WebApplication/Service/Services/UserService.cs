@@ -31,6 +31,8 @@ namespace Service.Services
             {
                 if (user.Email == item.Email)
                     throw new Exception("The email is already exists");
+                if (user.NameUser == item.NameUser)
+                    throw new Exception("The name is already exists");    
             }
             return _mapper.Map<UserDto>(_repository.AddItem(_mapper.Map<User>(item)));
         }

@@ -66,7 +66,7 @@ namespace Service.Services
 
             }
             taskItem.Description = item.Description;
-            taskItem.AssignedTo = item.AssignedToId;  // int מה-DTO
+            taskItem.AssignedTo = item.AssignedTo;  // int from-DTO
             taskItem.Title = item.Title;
             taskItem.Status = item.Status;
             taskItem.Priority = item.Priority;
