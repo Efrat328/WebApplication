@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Repository.Entities;
 using Repository.Interfaces;
+using Repository.Repositories;
 using Service.Dto;
 using Service.Interface;
 
@@ -53,6 +54,7 @@ namespace Service.Services
         public void UpdateItem(int id, SubTaskDto item)
         {
             SubTask subTask = _repository.GetById(id);
+            
             if (subTask != null)
             {
                 subTask.Title = item.Title;
@@ -66,7 +68,7 @@ namespace Service.Services
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            _repository.UpdateItem( _mapper.Map<SubTask>(item));
+            _repository.UpdateItem( _mapper.Map<SubTask>(subTask));
         }
     }
 }
