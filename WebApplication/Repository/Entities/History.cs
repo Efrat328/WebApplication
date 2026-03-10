@@ -18,8 +18,9 @@ namespace Repository.Entities
         public int Id { get; set; }
         public int SubTaskId { get; set; }
         public HistoryStatus OldStatus { get; set; }
-        public HistoryStatus NewStatus { get; set; }
+        public HistoryStatus NewStatus { get; set; } 
         public DateTime ChangedAt { get; set; }
+        public bool IsActive { get; set; }
 
         // connections
         public SubTask SubTask { get; set; }

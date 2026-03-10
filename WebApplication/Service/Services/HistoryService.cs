@@ -16,7 +16,6 @@ namespace Service.Services
     public class HistoryService : IService<HistoryDto>
     {
         private readonly IRepository<History> _repository;
-
         private readonly IMapper _mapper;
 
         public HistoryService(IRepository<History> repository, IMapper mapper)
@@ -41,7 +40,10 @@ namespace Service.Services
         }
         public void DeleteItem(int id)
         {
-            //_repository.DeleteItem(id);
+            History history = _repository.GetById(id);
+            if (history == null) throw new ArgumentNullException(nameof(id));
+            history.IsActive = false;
+            _repository.UpdateItem(history);
         }
         public List<HistoryDto> GetAll()
         {
