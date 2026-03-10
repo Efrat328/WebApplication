@@ -40,7 +40,7 @@ namespace Service.Services
                 throw new Exception("The deadline must be in the future");
             if ((item.Deadline - DateTime.Now).Days < item.Expected)
                 item.Priority = TaskPriorityDto.High;
-            else if ((item.Deadline - DateTime.Now).Days > item.Expected && (item.Deadline - DateTime.Now).Days < item.Expected * 2)
+            else if ((item.Deadline - DateTime.Now).Days < item.Expected * 2)
                 item.Priority = TaskPriorityDto.Low;
             else item.Priority = TaskPriorityDto.Medium;
             item.StartedAt = DateTime.Now;
