@@ -35,6 +35,14 @@ namespace Service.Services
                 if (taskItem.Title == item.Title)
                     throw new Exception("The Title is already exists");
             }
+            item.Status = TaskStatus.InProgress;
+            if(item.Deadline < DateTime.Now)
+                throw new Exception("The deadline must be in the future");
+            if  ((item.Deadline-DateTime.Now).Days< item.Expected)
+                item.Priority =TaskPriorityDto.High;
+            if  ((item.Deadline-DateTime.Now).Days> item.Expected&& (item.Deadline-DateTime.Now).Days< item.Expected*2)
+                item.Priority =TaskPriorityDto.Low;
+            else item.Priority =TaskPriorityDto.Medium;        
             item.StartedAt= DateTime.Now;
             return _mapper.Map<TaskItemDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));       
         }

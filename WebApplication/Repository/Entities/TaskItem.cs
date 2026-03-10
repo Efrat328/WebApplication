@@ -13,6 +13,12 @@ namespace Repository.Entities
         Completed,
         Canceled
     }
+    public enum TaskPriority
+    {
+        Low,
+        Medium,
+        High
+    }
     public class TaskItem
     {
         public int Id { get; set; }
@@ -20,7 +26,8 @@ namespace Repository.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public int AssignedTo { get; set; }
-        public string Priority { get; set; }
+        public TaskPriority Priority { get; set; }
+        public int Expected { get; set; }
         public TaskStatus Status { get; set; }
         public DateTime Deadline { get; set; }
         public DateTime StartedAt { get; set; }
