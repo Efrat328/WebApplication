@@ -24,7 +24,7 @@ namespace Service.Dto
         public int AssignedTo { get; set; }
         //public int AssignedToId { get; set; }   // for save (FK)
 
-        public TaskPriority Priority { get; set; }
+        public TaskPriorityDto Priority { get; set; }
         public TaskStatus Status { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime Deadline { get; set; }

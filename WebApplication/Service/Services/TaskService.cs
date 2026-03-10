@@ -77,7 +77,7 @@ namespace Service.Services
             taskItem.AssignedTo = item.AssignedTo;  // int from-DTO
             taskItem.Title = item.Title;
             taskItem.Status = item.Status;
-            taskItem.Priority = item.Priority;
+            //taskItem.Priority = item.Priority;
             taskItem.Deadline = item.Deadline;
             if (taskItem.Status == TaskStatus.Completed)
             {
