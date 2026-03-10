@@ -87,6 +87,26 @@ namespace Service.Services
 
         }
         //public void UpdateStatus(int id, TaskStatus status)
-        //public void UpdatePriority(int id, TaskPriority priority)
+        public void UpdatePriority(int id,  TaskItemDto item)
+        {
+            
+            List<SubTask> subTasks = _repository.GetById(id).SubTasks.ToList();
+            int count = 0,completeSubTask=0,score=0,days;
+            foreach (var subTask in subTasks)
+            {
+                if (subTask.Status == SubTaskStatus.Completed)
+                    count++;
+                
+            }
+            completeSubTask=(subTasks.Count/count)*100;
+            days = (_repository.GetById(id).Deadline - DateTime.Now).Days;
+            score =days/(_repository.GetById(id).Expected*(1-completeSubTask));
+            if (score < 1)
+                item.Priority = TaskPriorityDto.High;
+            else if (score <= 2)
+                item.Priority = TaskPriorityDto.Medium;
+            else
+                item.Priority = TaskPriorityDto.Low;
+        }
     }
 }
