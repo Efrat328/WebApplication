@@ -16,12 +16,14 @@ namespace Service.Services
     public class SubTaskService : IService<SubTaskDto>
     {
         private readonly IRepository<SubTask> _repository;
+        private readonly HistoryService _historyService;
         private readonly IMapper _mapper;
 
-        public SubTaskService(IRepository<SubTask> repository, IMapper mapper)
+        public SubTaskService(IRepository<SubTask> repository, IMapper mapper, HistoryService historyService)
         {
             this._repository = repository;
             this._mapper = mapper;
+            this._historyService = historyService;
         }
         public SubTaskDto AddItem(SubTaskDto item)
         {
@@ -54,7 +56,7 @@ namespace Service.Services
         public void UpdateItem(int id, SubTaskDto item)
         {
             SubTask subTask = _repository.GetById(id);
-            
+            _historyService.AddHistory(subTask.Status, item.Status,id);
             if (subTask != null)
             {
                 subTask.Title = item.Title;

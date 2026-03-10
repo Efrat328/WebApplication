@@ -10,11 +10,13 @@ using Repository.Interfaces;
 using Service.Dto;
 using Service.Interface;
 
+
 namespace Service.Services
 {
     public class HistoryService : IService<HistoryDto>
     {
         private readonly IRepository<History> _repository;
+
         private readonly IMapper _mapper;
 
         public HistoryService(IRepository<History> repository, IMapper mapper)
@@ -25,6 +27,17 @@ namespace Service.Services
         public HistoryDto AddItem(HistoryDto item)
         {
             return _mapper.Map<HistoryDto>(_repository.AddItem(_mapper.Map<History>(item)));
+        }
+        public void AddHistory(SubTaskStatus oldStatus, SubTaskStatus newStatus, int id)
+        {
+            HistoryDto historyDto = new HistoryDto
+            {
+                SubTaskId = id,
+                OldStatus = (HistoryStatus)oldStatus, // Explicit cast to HistoryStatus
+                NewStatus = (HistoryStatus)newStatus, // Explicit cast to HistoryStatus
+                ChangedAt = DateTime.Now
+            };
+            AddItem(historyDto);
         }
         public void DeleteItem(int id)
         {

@@ -95,8 +95,7 @@ namespace Service.Services
             foreach (var subTask in subTasks)
             {
                 if (subTask.Status == SubTaskStatus.Completed)
-                    count++;
-                
+                    count++;    
             }
             completeSubTask=(subTasks.Count/count)*100;
             days = (_repository.GetById(id).Deadline - DateTime.Now).Days;
