@@ -35,18 +35,18 @@ namespace Service.Services
                 if (taskItem.Title == item.Title)
                     throw new Exception("The Title is already exists");
             }
-            item.Status = TaskStatus.InProgress;
-            if(item.Deadline < DateTime.Now)
+            item.Status = TaskStatus.Open;
+            if (item.Deadline < DateTime.Now)
                 throw new Exception("The deadline must be in the future");
-            if  ((item.Deadline-DateTime.Now).Days< item.Expected)
-                item.Priority =TaskPriorityDto.High;
-            if  ((item.Deadline-DateTime.Now).Days> item.Expected&& (item.Deadline-DateTime.Now).Days< item.Expected*2)
-                item.Priority =TaskPriorityDto.Low;
-            else item.Priority =TaskPriorityDto.Medium;        
-            item.StartedAt= DateTime.Now;
-            return _mapper.Map<TaskItemDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));       
+            if ((item.Deadline - DateTime.Now).Days < item.Expected)
+                item.Priority = TaskPriorityDto.High;
+            else if ((item.Deadline - DateTime.Now).Days > item.Expected && (item.Deadline - DateTime.Now).Days < item.Expected * 2)
+                item.Priority = TaskPriorityDto.Low;
+            else item.Priority = TaskPriorityDto.Medium;
+            item.StartedAt = DateTime.Now;
+            return _mapper.Map<TaskItemDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));
         }
-       public void DeleteItem(int id)
+        public void DeleteItem(int id)
         {
             TaskItem taskItem = _repository.GetById(id);
             if (taskItem == null) throw new ArgumentNullException(nameof(id));
@@ -55,7 +55,7 @@ namespace Service.Services
                 subTask.Status = SubTaskStatus.Canceled;
             }
             taskItem.Status = TaskStatus.Canceled;
-            _repository.UpdateItem( taskItem);
+            _repository.UpdateItem(taskItem);
         }
         public List<TaskItemDto> GetAll()
         {
@@ -84,6 +84,9 @@ namespace Service.Services
                 taskItem.CompletedAt = DateTime.Now;
                 _repository.UpdateItem(taskItem);
             }
+
         }
+        //public void UpdateStatus(int id, TaskStatus status)
+        //public void UpdatePriority(int id, TaskPriority priority)
     }
 }
