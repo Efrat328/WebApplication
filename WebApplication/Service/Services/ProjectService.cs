@@ -17,10 +17,10 @@ namespace Service.Services
     public class ProjectService : IService<ProjectDto>
     {
         private readonly IRepository<Project> _repository;
-        private readonly TaskService _taskService;
+        private readonly IService<TaskItemDto> _taskService;
         private readonly IMapper _mapper;
 
-        public ProjectService(IRepository<Project> repository, IMapper mapper, TaskService taskService)
+        public ProjectService(IRepository<Project> repository, IMapper mapper, IService<TaskItemDto> taskService)
         {
             this._repository = repository;
             this._mapper = mapper;
