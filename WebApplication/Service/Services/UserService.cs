@@ -22,11 +22,11 @@ namespace Service.Services
             this._repository = repository;
             this._mapper = mapper;
         }
-        public UserDto AddItem(UserDto item)
+        public async Task<UserDto> AddItem(UserDto item)
         {
             if (item == null) throw new ArgumentNullException("item");
             List<UserDto> users = new List<UserDto>();
-            users = GetAll();
+            users = await GetAll();
             foreach (UserDto user in users)
             {
                 if (user.Email == item.Email)
@@ -34,27 +34,27 @@ namespace Service.Services
                 if (user.NameUser == item.NameUser)
                     throw new Exception("The name is already exists");    
             }
-            return _mapper.Map<UserDto>(_repository.AddItem(_mapper.Map<User>(item)));
+            return _mapper.Map<UserDto>(await _repository.AddItem(_mapper.Map<User>(item)));
         }
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            User user = _repository.GetById(id);
+            User user = await _repository.GetById(id);
             if (user == null) throw new ArgumentNullException(nameof(id));
             user.IsActive = false;
-            _repository.UpdateItem( user);
+            await _repository.UpdateItem( user);
 
         }
-        public List<UserDto> GetAll()
+        public async Task<List<UserDto>> GetAll()
         {
-            return _mapper.Map<List<UserDto>>(_repository.GetAll());
+            return _mapper.Map<List<UserDto>>(await _repository.GetAll());
         }
-        public UserDto GetById(int id)
+        public async Task<UserDto> GetById(int id)
         {
-            return _mapper.Map<UserDto>(_repository.GetById(id));
+            return _mapper.Map<UserDto>(await _repository.GetById(id));
         }
-        public void UpdateItem(int id, UserDto item)
+        public async Task UpdateItem(int id, UserDto item)
         {
-            User user = _repository.GetById(id);
+            User user = await _repository.GetById(id);
             if (user != null)
             {
 
@@ -66,7 +66,7 @@ namespace Service.Services
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            _repository.UpdateItem( _mapper.Map<User>(user));
+            await _repository.UpdateItem( _mapper.Map<User>(user));
         }
     }
 }
