@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 using Repository.Interfaces;
 
@@ -16,38 +16,24 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public SubTask AddItem(SubTask item)
+        public async Task<SubTask> AddItem(SubTask item)
         {
-            _context.SubTasks.ToList().Add(item);
-            _context.Save();
+            await _context.SubTasks.AddAsync(item);
+            await _context.SaveAsync();
             return item;
         }
-        public void DeleteItem(int id)
+        public async Task<List<SubTask>> GetAll()
         {
-            _context.SubTasks.ToList().Remove(GetById(id));
-            _context.Save();
+            return await _context.SubTasks.ToListAsync();
         }
-        public List<SubTask> GetAll()
+        public async Task<SubTask> GetById(int id)
         {
-            return _context.SubTasks.ToList();
+            return await _context.SubTasks.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public SubTask GetById(int id)
-        {
-            return _context.SubTasks.ToList().FirstOrDefault(x => x.Id == id);
-        }
-        //public void UpdateItem(int id, SubTask item)
-        //{
-        //    var subTask = GetById(id);
-        //    subTask.Title = item.Title;
-        //    subTask.Description = item.Description;
-        //    subTask.Status = item.Status;
-        //    subTask.Deadline = item.Deadline;
-        //    _context.Save();
-        //}
-        public void UpdateItem(SubTask item)
+        public async Task UpdateItem(SubTask item)
         {
             _context.SubTasks.Update(item);
-            _context.Save();
+            await _context.SaveAsync();
         }
     }
 }
