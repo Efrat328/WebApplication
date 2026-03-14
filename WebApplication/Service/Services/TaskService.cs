@@ -82,15 +82,16 @@ namespace Service.Services
             if (taskItem.Status == TaskStatus.Completed)
             {
                 taskItem.CompletedAt = DateTime.Now;
-                await _repository.UpdateItem(taskItem);
+                
             }
+            await _repository.UpdateItem(taskItem);
 
         }
         //public void UpdateStatus(int id, TaskStatus status)
         public async Task UpdatePriority(int id,  TaskItemDto item)
         {
-            
-            List<SubTask> subTasks = await _repository.GetById(id).SubTasks.ToList();
+            TaskItem taskItem = await _repository.GetById(id);
+            List<SubTask> subTasks = taskItem.SubTasks.ToList();
             int count = 0,completeSubTask=0,score=0,days;
             foreach (var subTask in subTasks)
             {
@@ -98,8 +99,8 @@ namespace Service.Services
                     count++;    
             }
             completeSubTask=(subTasks.Count/count)*100;
-            days = (await _repository.GetById(id).Deadline - DateTime.Now).Days;
-            score =days/(await _repository.GetById(id).Expected*(1-completeSubTask));
+            days = (taskItem.Deadline - DateTime.Now).Days;
+            score =days/(taskItem.Expected*(1-completeSubTask));
             if (score < 1)
                 item.Priority = TaskPriorityDto.High;
             else if (score <= 2)
