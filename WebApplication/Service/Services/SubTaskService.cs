@@ -25,52 +25,50 @@ namespace Service.Services
             this._mapper = mapper;
             this._historyService = historyService;
         }
-        public SubTaskDto AddItem(SubTaskDto item)
+        public async Task<SubTaskDto> AddItem(SubTaskDto item)
         {
             if (item == null) throw new ArgumentNullException("item");
-            List<SubTaskDto> subTasks = new List<SubTaskDto>();
-            subTasks = GetAll();
+            List<SubTaskDto> subTasks = await GetAll();
             foreach (SubTaskDto subTask in subTasks)
             {
-                if (subTask.Title == item.Title)
-                    throw new Exception("This subTask is already exists");
+            if (subTask.Title == item.Title)
+                throw new Exception("This subTask is already exists");
             }
-            return _mapper.Map<SubTaskDto>(_repository.AddItem(_mapper.Map<SubTask>(item)));
+            return _mapper.Map<SubTaskDto>(await _repository.AddItem(_mapper.Map<SubTask>(item)));
         }
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            SubTask subTask = _repository.GetById(id);
+            SubTask subTask = await _repository.GetById(id);
             if (subTask == null) throw new ArgumentNullException(nameof(id));
             subTask.Status = SubTaskStatus.Canceled;
-            _repository.UpdateItem(subTask);
+            await _repository.UpdateItem(subTask);
+
         }
-        public List<SubTaskDto> GetAll()
+        public async Task<List<SubTaskDto>> GetAll()
         {
-            return _mapper.Map<List<SubTaskDto>>(_repository.GetAll());
+            return _mapper.Map<List<SubTaskDto>>(await _repository.GetAll());
+        }   
+        public async Task<SubTaskDto> GetById(int id)
+        {
+            return _mapper.Map<SubTaskDto>(await _repository.GetById(id));
         }
-        public SubTaskDto GetById(int id)
+        public async Task UpdateItem(int id, SubTaskDto item)
         {
-            if(id==null) throw new ArgumentNullException(nameof(id));
-            return _mapper.Map<SubTaskDto>(_repository.GetById(id));
-        }
-        public void UpdateItem(int id, SubTaskDto item)
-        {
-            SubTask subTask = _repository.GetById(id);
-            _historyService.AddHistory(subTask.Status, item.Status,id);
+            SubTask subTask = await _repository.GetById(id);
             if (subTask != null)
             {
+                await _historyService.AddHistory(subTask.Status, item.Status, id);
                 subTask.Title = item.Title;
                 subTask.Description = item.Description;
                 subTask.AssignedTo = item.AssignedTo;
                 subTask.Deadline = item.Deadline;
                 subTask.Status = item.Status;
-
+                await _repository.UpdateItem(_mapper.Map<SubTask>(subTask));
             }
             else
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            _repository.UpdateItem( _mapper.Map<SubTask>(subTask));
-        }
+}
     }
 }
