@@ -22,11 +22,6 @@ namespace Repository.Repositories
             await _context.SaveAsync();
             return item;
         }
-        public void DeleteItem(int id)
-        {
-            _context.Tasks.ToList().Remove(GetById(id));
-            _context.Save();
-        }
 
         public async Task<List<TaskItem>> GetAll()
         {
@@ -42,16 +37,6 @@ namespace Repository.Repositories
                 .Include(t => t.SubTasks)
                 .FirstOrDefaultAsync(x => x.Id == id);
 }
-        //public void UpdateItem(int id, TaskItem item)
-        //{
-        //    var task = GetById(id);
-        //    task.Title = item.Title;
-        //    task.Description = item.Description;
-        //    task.Status = item.Status;
-        //    task.Priority = item.Priority;
-        //    task.Deadline = item.Deadline;
-        //    _context.Save();
-        //}
        public async Task UpdateItem(TaskItem item)
         {
             _context.Tasks.Update(item);
