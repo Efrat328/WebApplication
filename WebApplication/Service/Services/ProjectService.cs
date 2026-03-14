@@ -26,41 +26,41 @@ namespace Service.Services
             this._mapper = mapper;
             _taskService = taskService;
         }
-        public ProjectDto AddItem(ProjectDto item)
+        public async Task<ProjectDto> AddItem(ProjectDto item)
         {
             if (item == null) throw new ArgumentNullException("item");
             List<ProjectDto> projects = new List<ProjectDto>();
-            projects = GetAll();
+            projects = await GetAll();
             foreach (ProjectDto project in projects)
             {
                 if (project.NameProject == item.NameProject)
                     throw new Exception("This project is already exists");
             }
-            return _mapper.Map<ProjectDto>(_repository.AddItem(_mapper.Map<Project>(item)));
+            return _mapper.Map<ProjectDto>(await _repository.AddItem(_mapper.Map<Project>(item)));
         }
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            Project project = _repository.GetById(id);
+            Project project = await _repository.GetById(id);
             if (project == null) throw new ArgumentNullException(nameof(id));
             project.Status = ProjectStatus.Canceled;
             foreach (TaskItem task in project.Tasks)
             {           
-                 _taskService.DeleteItem(task.Id);
+                 await _taskService.DeleteItem(task.Id);
             }
-            _repository.UpdateItem(project);      
+             await _repository.UpdateItem(project);      
         }
-        public List<ProjectDto> GetAll()
+        public async Task<List<ProjectDto>> GetAll()
         {
-            return _mapper.Map<List<ProjectDto>>(_repository.GetAll());
+            return _mapper.Map<List<ProjectDto>>(await _repository.GetAll());
         }
-        public ProjectDto GetById(int id)
+        public async Task<ProjectDto> GetById(int id)
         {
-            if(id==null) throw new ArgumentNullException(nameof(id));
-            return _mapper.Map<ProjectDto>(_repository.GetById(id));
+            
+            return _mapper.Map<ProjectDto>(await _repository.GetById(id));
         }
-        public void UpdateItem(int id, ProjectDto item)
+        public async Task UpdateItem(int id, ProjectDto item)
         {
-            Project project = _repository.GetById(id);
+            Project project = await _repository.GetById(id);
             if (project != null)
             {
                 project.NameProject = item.NameProject;
@@ -72,7 +72,7 @@ namespace Service.Services
             {
                 throw new ArgumentNullException(nameof(id));
             }
-            _repository.UpdateItem( _mapper.Map<Project>(project));
+            await _repository.UpdateItem(_mapper.Map<Project>(project));
         }
     }
 }

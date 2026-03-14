@@ -23,11 +23,11 @@ namespace Service.Services
             this._repository = repository;
             this._mapper = mapper;
         }
-        public HistoryDto AddItem(HistoryDto item)
+        public async Task<HistoryDto> AddItem(HistoryDto item)
         {
-            return _mapper.Map<HistoryDto>(_repository.AddItem(_mapper.Map<History>(item)));
+            return _mapper.Map<HistoryDto>(await _repository.AddItem(_mapper.Map<History>(item)));
         }
-        public void AddHistory(SubTaskStatus oldStatus, SubTaskStatus newStatus, int id)
+        public async Task AddHistory(SubTaskStatus oldStatus, SubTaskStatus newStatus, int id)
         {
             HistoryDto historyDto = new HistoryDto
             {
@@ -36,26 +36,26 @@ namespace Service.Services
                 NewStatus = (HistoryStatus)newStatus, // Explicit cast to HistoryStatus
                 ChangedAt = DateTime.Now
             };
-            AddItem(historyDto);
+            await AddItem(historyDto);
         }
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            History history = _repository.GetById(id);
+            History history = await _repository.GetById(id);
             if (history == null) throw new ArgumentNullException(nameof(id));
             history.IsActive = false;
-            _repository.UpdateItem(history);
+            await _repository.UpdateItem(history);
         }
-        public List<HistoryDto> GetAll()
+        public async Task<List<HistoryDto>> GetAll()
         {
-            return _mapper.Map<List<HistoryDto>>(_repository.GetAll());
+            return _mapper.Map<List<HistoryDto>>(await _repository.GetAll());
         }
-        public HistoryDto GetById(int id)
+        public async Task<HistoryDto> GetById(int id)
         {
-            return _mapper.Map<HistoryDto>(_repository.GetById(id));
+            return _mapper.Map<HistoryDto>(await _repository.GetById(id));
         }
-        public void UpdateItem(int id, HistoryDto item)
+        public async Task UpdateItem(int id, HistoryDto item)
         {
-            _repository.UpdateItem( _mapper.Map<History>(item));
+            await _repository.UpdateItem( _mapper.Map<History>(item));
         }
     }
 }

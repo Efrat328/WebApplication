@@ -25,11 +25,11 @@ namespace Service.Services
             this._repository = repository;
             this._mapper = mapper;
         }
-        public TaskItemDto AddItem(TaskItemDto item)
+        public async Task<TaskItemDto> AddItem(TaskItemDto item)
         {
             if (item == null) throw new ArgumentNullException("item");
             List<TaskItemDto> taskItems = new List<TaskItemDto>();
-            taskItems = GetAll();
+            taskItems = await GetAll();
             foreach (TaskItemDto taskItem in taskItems)
             {
                 if (taskItem.Title == item.Title)
@@ -44,30 +44,30 @@ namespace Service.Services
                 item.Priority = TaskPriorityDto.Low;
             else item.Priority = TaskPriorityDto.Medium;
             item.StartedAt = DateTime.Now;
-            return _mapper.Map<TaskItemDto>(_repository.AddItem(_mapper.Map<TaskItem>(item)));
+            return _mapper.Map<TaskItemDto>(await _repository.AddItem(_mapper.Map<TaskItem>(item)));
         }
-        public void DeleteItem(int id)
+        public async Task DeleteItem(int id)
         {
-            TaskItem taskItem = _repository.GetById(id);
+            TaskItem taskItem = await _repository.GetById(id);
             if (taskItem == null) throw new ArgumentNullException(nameof(id));
             foreach (var subTask in taskItem.SubTasks)
             {
                 subTask.Status = SubTaskStatus.Canceled;
             }
             taskItem.Status = TaskStatus.Canceled;
-            _repository.UpdateItem(taskItem);
+            await _repository.UpdateItem(taskItem);
         }
-        public List<TaskItemDto> GetAll()
+        public async Task<List<TaskItemDto>> GetAll()
         {
-            return _mapper.Map<List<TaskItemDto>>(_repository.GetAll());
+            return _mapper.Map<List<TaskItemDto>>(await _repository.GetAll());
         }
-        public TaskItemDto GetById(int id)
+        public async Task<TaskItemDto> GetById(int id)
         {
-            return _mapper.Map<TaskItemDto>(_repository.GetById(id));
+            return _mapper.Map<TaskItemDto>(await _repository.GetById(id));
         }
-        public void UpdateItem(int id, TaskItemDto item)
+        public async Task UpdateItem(int id, TaskItemDto item)
         {
-            TaskItem taskItem = _repository.GetById(id);
+            TaskItem taskItem = await _repository.GetById(id);
             if (taskItem == null)
             {
                 throw new ArgumentNullException(nameof(id));
@@ -82,15 +82,15 @@ namespace Service.Services
             if (taskItem.Status == TaskStatus.Completed)
             {
                 taskItem.CompletedAt = DateTime.Now;
-                _repository.UpdateItem(taskItem);
+                await _repository.UpdateItem(taskItem);
             }
 
         }
         //public void UpdateStatus(int id, TaskStatus status)
-        public void UpdatePriority(int id,  TaskItemDto item)
+        public async Task UpdatePriority(int id,  TaskItemDto item)
         {
             
-            List<SubTask> subTasks = _repository.GetById(id).SubTasks.ToList();
+            List<SubTask> subTasks = await _repository.GetById(id).SubTasks.ToList();
             int count = 0,completeSubTask=0,score=0,days;
             foreach (var subTask in subTasks)
             {
@@ -98,8 +98,8 @@ namespace Service.Services
                     count++;    
             }
             completeSubTask=(subTasks.Count/count)*100;
-            days = (_repository.GetById(id).Deadline - DateTime.Now).Days;
-            score =days/(_repository.GetById(id).Expected*(1-completeSubTask));
+            days = (await _repository.GetById(id).Deadline - DateTime.Now).Days;
+            score =days/(await _repository.GetById(id).Expected*(1-completeSubTask));
             if (score < 1)
                 item.Priority = TaskPriorityDto.High;
             else if (score <= 2)
