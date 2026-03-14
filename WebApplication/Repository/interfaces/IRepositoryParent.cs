@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Repository.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Repository.Interfaces
 {
     public interface IRepositoryParent<T>
     {
-        List<T> GetAll();
-        T AddItem(T item);
+        Task<List<T>> GetAll();
+        Task<T> AddItem(T item);
     }
 }

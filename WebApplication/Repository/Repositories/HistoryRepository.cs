@@ -16,17 +16,17 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public History AddItem(History item)
+        public async Task<History> AddItem(History item)
         {
-            _context.Histories.ToList().Add(item);
-            _context.Save();
+            await _context.Histories.AddAsync(item);
+            await _context.SaveAsync();
             return item;
         }
-        public void DeleteItem(int id)
-        {
-            _context.Histories.ToList().Remove(GetById(id));
-            _context.Save();
-        }
+        //public void DeleteItem(int id)
+        //{
+        //    _context.Histories.ToList().Remove(GetById(id));
+        //    _context.Save();
+        //}
         public List<History> GetAll()
         {
             return _context.Histories.ToList();
