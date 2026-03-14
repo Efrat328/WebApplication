@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,25 +17,25 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public Project AddItem(Project item)
+        public async Task<Project> AddItem(Project item)
         {
-            _context.Projects.ToList().Add(item);
-            _context.Save();
+            await _context.Projects.AddAsync(item);
+            await _context.SaveAsync();
             return item;
         }
        
-        public List<Project> GetAll()
+        public async Task<List<Project>> GetAll()
         {
-            return _context.Projects.ToList();
+            return await _context.Projects.ToListAsync();
         }
-        public Project GetById(int id)
+        public async Task<Project> GetById(int id)
         {
-            return _context.Projects.ToList().FirstOrDefault(x => x.Id == id);
+            return await _context.Projects.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public void UpdateItem(Project item)
+        public async Task UpdateItem(Project item)
         {
             _context.Projects.Update(item);
-            _context.Save();
+            await _context.SaveAsync();
         }
     }
 }
