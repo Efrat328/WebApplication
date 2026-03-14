@@ -8,8 +8,8 @@ namespace Service.Interface
 {
     public interface IService<T> : IServiceParent<T>
     {
-        T GetById(int id);
-        void UpdateItem(int id, T item);
-        void DeleteItem(int id);
+        Task<T> GetById(int id);
+        Task UpdateItem(int id, T item);
+        Task DeleteItem(int id);
     }
 }

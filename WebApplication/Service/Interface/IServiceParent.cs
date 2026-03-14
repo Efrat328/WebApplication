@@ -8,7 +8,7 @@ namespace Service.Interface
 {
     public interface IServiceParent<T>
     {
-        List<T> GetAll();
-        T AddItem(T item);
+        Task<List<T>> GetAll();
+        Task<T> AddItem(T item);
     }
 }
