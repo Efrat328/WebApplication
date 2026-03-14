@@ -16,10 +16,10 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public TaskItem AddItem(TaskItem item)
+        public async Task<TaskItem> AddItem(TaskItem item)
         {
-            _context.Tasks.ToList().Add(item);
-            _context.Save();
+            await _context.Tasks.AddAsync(item);
+            await _context.SaveAsync();
             return item;
         }
         public void DeleteItem(int id)
@@ -28,20 +28,20 @@ namespace Repository.Repositories
             _context.Save();
         }
 
-        public List<TaskItem> GetAll()
+        public async Task<List<TaskItem>> GetAll()
         {
-            return _context.Tasks
+            return await _context.Tasks
                 .Include(t => t.Project)
                 .Include(t => t.User)
-                .ToList();
+                .ToListAsync();
         }
        
-        public TaskItem GetById(int id)
+        public async Task<TaskItem> GetById(int id)
         {
-            return _context.Tasks
-            .Include(t => t.SubTasks)
-            .FirstOrDefault(x => x.Id == id);
-        }
+            return await _context.Tasks
+                .Include(t => t.SubTasks)
+                .FirstOrDefaultAsync(x => x.Id == id);
+}
         //public void UpdateItem(int id, TaskItem item)
         //{
         //    var task = GetById(id);
@@ -52,10 +52,10 @@ namespace Repository.Repositories
         //    task.Deadline = item.Deadline;
         //    _context.Save();
         //}
-        public void UpdateItem(TaskItem item)
+       public async Task UpdateItem(TaskItem item)
         {
             _context.Tasks.Update(item);
-            _context.Save();
+            await _context.SaveAsync();
         }
     }
 }
