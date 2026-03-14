@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Repository.Entities;
 using Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Repositories
 {
@@ -15,26 +16,24 @@ namespace Repository.Repositories
         {
             this._context = context;
         }
-        public User AddItem(User item)
+        public async Task<User> AddItem(User item)
         {
-            _context.Users.ToList().Add(item);
-            _context.Save();
+            await _context.Users.AddAsync(item);
+            await _context.SaveAsync();
             return item;
         }
-        public List<User> GetAll()
+        public async Task<List<User>> GetAll()
         {
-            return _context.Users.ToList();
+            return await _context.Users.ToListAsync();
         }
-        public User GetById(int id)
+        public async Task<User> GetById(int id)
         {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
-            return _context.Users.ToList().FirstOrDefault(x => x.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public void UpdateItem( User item)
+        public async Task UpdateItem(User item)
         {
             _context.Users.Update(item);
-            _context.Save();
+            await _context.SaveAsync();
         }
     }
 }
