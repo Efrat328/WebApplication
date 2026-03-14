@@ -17,7 +17,6 @@ namespace Repository.Interfaces
         DbSet<TaskItem> Tasks { get; }
         DbSet<SubTask> SubTasks { get; }
         DbSet<History> Histories { get; }
-        void Save();
         Task SaveAsync();
     }
 }

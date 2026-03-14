@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 using Repository.Interfaces;
 
@@ -22,32 +22,18 @@ namespace Repository.Repositories
             await _context.SaveAsync();
             return item;
         }
-        //public void DeleteItem(int id)
-        //{
-        //    _context.Histories.ToList().Remove(GetById(id));
-        //    _context.Save();
-        //}
-        public List<History> GetAll()
+        public async Task<List<History>> GetAll()
         {
-            return _context.Histories.ToList();
+            return await _context.Histories.ToListAsync();
         }
-        public History GetById(int id)
+        public async Task<History> GetById(int id)
         {
-            return _context.Histories.ToList().FirstOrDefault(x => x.Id == id);
+            return await _context.Histories.FirstOrDefaultAsync(x => x.Id == id);
         }
-
-        /* public void UpdateItem(int id, History item)
-         {
-             var history = GetById(id);
-             history.OldStatus = item.OldStatus;
-             history.NewStatus = item.NewStatus;
-             history.ChangedAt = item.ChangedAt;
-             _context.Save();
-         }*/
-        public void UpdateItem(History item)
+        public async Task UpdateItem(History item)
         {
             _context.Histories.Update(item);
-            _context.Save();
+            await _context.SaveAsync();
         }
     }
 }

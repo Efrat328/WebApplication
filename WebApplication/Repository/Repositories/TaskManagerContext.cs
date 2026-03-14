@@ -29,9 +29,9 @@ namespace Repository.Repositories
                 .HasForeignKey(s => s.Id)
                 .OnDelete(DeleteBehavior.NoAction);
         }
-        public void Save()
+        public async Task SaveAsync()
         {
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 }
