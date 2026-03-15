@@ -7,6 +7,9 @@ using Service.Dto;
 using Service.Interface;
 using Service.Services;
 using Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
@@ -28,7 +31,21 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<TaskManagerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IContext, TaskManagerContext>();
-
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,        // ← בדוק שהטוקן מהשרת שלנו
+            ValidateAudience = true,      // ← בדוק שהטוקן מיועד למשתמשים שלנו
+            ValidateLifetime = true,      // ← בדוק שהטוקן לא פג תוקף
+            ValidateIssuerSigningKey = true, // ← בדוק שהחתימה תקינה
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],      // ← קורא מה-appsettings
+            ValidAudience = builder.Configuration["Jwt:Audience"],  // ← קורא מה-appsettings
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])) // ← המפתח הסודי
+        };
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -45,6 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

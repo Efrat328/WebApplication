@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.Dto;
 using Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController:ControllerBase
 {
     private readonly IService<UserDto> _service;
@@ -15,34 +17,34 @@ public class UserController:ControllerBase
     }
     
     [HttpGet]
-    public ActionResult<List<UserDto>> GetAll()
+    public async Task<ActionResult<List<UserDto>>> GetAll()
     {
-        return _service.GetAll();
+        return await _service.GetAll();
     }
     
     [HttpGet("{id}")]
-    public ActionResult<UserDto> GetById(int id)
+    public async Task<ActionResult<UserDto>> GetById(int id)
     {
-        return _service.GetById(id);
+        return await _service.GetById(id);
     }
     
     [HttpPost]
-    public ActionResult<UserDto> AddItem(UserDto item)
+    public async Task<ActionResult<UserDto>> AddItem(UserDto item)
     {
-        return _service.AddItem(item);
+        return await _service.AddItem(item);
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateItem(int id, UserDto item)
+    public async Task<IActionResult> UpdateItem(int id, UserDto item)
     {
-        _service.UpdateItem(id, item);
+        await _service.UpdateItem(id, item);
         return NoContent();
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteItem(int id)
+    public async Task<IActionResult> DeleteItem(int id)
     {
-        _service.DeleteItem(id);
+        await _service.DeleteItem(id);
         return NoContent();
     }
 }
