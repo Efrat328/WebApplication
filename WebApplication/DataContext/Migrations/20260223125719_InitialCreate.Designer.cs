@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Repository.Repositories;
+using DataContext;
 
 #nullable disable
 
 namespace Repository.Migrations
 {
     [DbContext(typeof(TaskManagerContext))]
-    [Migration("20260307235355_FixCascade")]
-    partial class FixCascade
+    [Migration("20260223125719_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,11 +36,13 @@ namespace Repository.Migrations
                     b.Property<DateTime>("ChangedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NewStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("NewStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OldStatus")
-                        .HasColumnType("int");
+                    b.Property<string>("OldStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SubTaskId")
                         .HasColumnType("int");
@@ -71,8 +73,9 @@ namespace Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -87,7 +90,10 @@ namespace Repository.Migrations
             modelBuilder.Entity("Repository.Entities.SubTask", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AssignedTo")
                         .HasColumnType("int");
@@ -102,13 +108,11 @@ namespace Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TasksId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -117,7 +121,7 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TasksId");
+                    b.HasIndex("TaskId");
 
                     b.ToTable("SubTasks");
                 });
@@ -153,8 +157,9 @@ namespace Repository.Migrations
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -220,21 +225,13 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Entities.SubTask", b =>
                 {
-                    b.HasOne("Repository.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Repository.Entities.TaskItem", "Tasks")
+                    b.HasOne("Repository.Entities.TaskItem", "Task")
                         .WithMany("SubTasks")
-                        .HasForeignKey("TasksId")
+                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Tasks");
-
-                    b.Navigation("User");
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("Repository.Entities.TaskItem", b =>

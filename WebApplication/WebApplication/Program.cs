@@ -32,6 +32,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<TaskManagerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IContext, TaskManagerContext>();
+builder.Services.AddScoped<HistoryService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
