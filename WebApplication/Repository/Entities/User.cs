@@ -29,6 +29,9 @@ namespace Repository.Entities
         [Required]
         public bool IsActive { get; set; }
 
+        [Required]
+        public string Role { get; set; } = "user";
+
         // connections
         public ICollection<Project> Projects { get; set; }
         public ICollection<TaskItem> Tasks { get; set; }

@@ -8,8 +8,7 @@ namespace DataContext
         public TaskManagerContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<TaskManagerContext>();
-            optionsBuilder.UseSqlServer("Server=localhost,1433;Database=TaskManager;User Id=sa;Password=YourPassword123!;TrustServerCertificate=True");
-
+            optionsBuilder.UseSqlServer("Server=DESKTOP-1VUANBN;Database=TaskManagerDB;Trusted_Connection=True;TrustServerCertificate=True");
             return new TaskManagerContext(optionsBuilder.Options);
         }
     }
