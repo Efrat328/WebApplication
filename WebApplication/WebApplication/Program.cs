@@ -1,7 +1,8 @@
 global using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Repository.Repositories;
+using DataContext;
 using Repository.Entities;
+using Repository.Repositories;
 using Repository.Interfaces;
 using Service.Dto;
 using Service.Interface;

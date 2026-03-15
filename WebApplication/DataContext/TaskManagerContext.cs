@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository.Entities;
 using Repository.Interfaces;
 
-namespace Repository.Repositories
+namespace DataContext
 {
     public class TaskManagerContext : DbContext, IContext
     {
