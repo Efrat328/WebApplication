@@ -16,7 +16,7 @@ namespace Service
             CreateMap<Project, ProjectDto>();
             CreateMap<ProjectDto, Project>();
 
-            CreateMap<TaskItem, TaskItemDto>();
+            //CreateMap<TaskItem, TaskItemDto>();
             //.ForMember(dest => dest.ProjectName,
             //opt => opt.MapFrom(src => src.Project.NameProject))
             //.ForMember(dest => dest.AssignedTo,
@@ -24,8 +24,19 @@ namespace Service
             //.ForMember(dest => dest.AssignedToId,
             //opt => opt.MapFrom(src => src.AssignedTo));         // int → int (FK)
 
+            CreateMap<TaskItem, TaskItemDto>()
+            .ForMember(dest => dest.ProjectName,
+            opt => opt.MapFrom(src => src.Project.NameProject));
 
-            CreateMap<TaskItemDto, TaskItem>();
+
+
+            CreateMap<TaskItemDto, TaskItem>()
+    .ForMember(dest => dest.ProjectId,
+    opt => opt.MapFrom(src => src.ProjectId))
+    .ForMember(dest => dest.AssignedTo,
+    opt => opt.MapFrom(src => src.AssignedTo));
+
+            //CreateMap<TaskItemDto, TaskItem>();
             //.ForMember(dest => dest.AssignedTo,
             //opt => opt.MapFrom(src => src.AssignedToId));       // int → int ✅
 

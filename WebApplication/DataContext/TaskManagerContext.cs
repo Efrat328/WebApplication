@@ -28,6 +28,11 @@ namespace DataContext
                 .WithMany()
                 .HasForeignKey(s => s.Id)
                 .OnDelete(DeleteBehavior.NoAction);
+                modelBuilder.Entity<TaskItem>()
+                    .HasOne(t => t.User)
+                    .WithMany()
+                    .HasForeignKey(t => t.AssignedTo)
+                    .OnDelete(DeleteBehavior.NoAction);
         }
         public async Task SaveAsync()
         {
