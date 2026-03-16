@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace DataContext
 {
@@ -7,8 +8,15 @@ namespace DataContext
     {
         public TaskManagerContext CreateDbContext(string[] args)
         {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../WebApplication"))
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+                .Build();
+
             var optionsBuilder = new DbContextOptionsBuilder<TaskManagerContext>();
-            optionsBuilder.UseSqlServer("Server=DESKTOP-1VUANBN;Database=TaskManagerDB;Trusted_Connection=True;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+
             return new TaskManagerContext(optionsBuilder.Options);
         }
     }

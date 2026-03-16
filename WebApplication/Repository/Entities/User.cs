@@ -27,7 +27,7 @@ namespace Repository.Entities
         public string Password { get; set; }
 
         [Required]
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }= true;
 
         [Required]
         public string Role { get; set; } = "user";
