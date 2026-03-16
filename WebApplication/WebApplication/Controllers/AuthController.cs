@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(UserDto user)
     {
-        user.Role = "user";
+        //user.Role = "user";
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         return await _userService.AddItem(user);
     }
