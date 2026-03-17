@@ -38,7 +38,7 @@ namespace Repository.Entities
         [Required]
         public DateTime Deadline { get; set; }
         public DateTime StartedAt { get; set; }
-        public DateTime CompletedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
 
         // connections
         public Project Project { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,10 +36,11 @@ namespace Repository.Entities
         //[Required]
         //public DateTime Deadline { get; set; }
 
-        [Required]
-        public DateTime CompletedAt { get; set; }
+        
+        public DateTime? CompletedAt { get; set; }
 
         // connections
+        [ForeignKey("TaskId")]
         public TaskItem Tasks { get; set; }
         public User User { get; set; }
         public ICollection<History> Histories { get; set; }

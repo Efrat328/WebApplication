@@ -26,7 +26,7 @@ namespace DataContext
             modelBuilder.Entity<SubTask>()
                 .HasOne(s => s.User)
                 .WithMany()
-                .HasForeignKey(s => s.Id)
+                .HasForeignKey(s => s.AssignedTo)
                 .OnDelete(DeleteBehavior.NoAction);
                 modelBuilder.Entity<TaskItem>()
                     .HasOne(t => t.User)

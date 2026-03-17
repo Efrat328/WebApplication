@@ -24,11 +24,13 @@ namespace Service
             //.ForMember(dest => dest.AssignedToId,
             //opt => opt.MapFrom(src => src.AssignedTo));         // int → int (FK)
 
+            //CreateMap<TaskItem, TaskItemDto>()
+            //.ForMember(dest => dest.ProjectName,
+            //opt => opt.MapFrom(src => src.Project.NameProject));
+
             CreateMap<TaskItem, TaskItemDto>()
-            .ForMember(dest => dest.ProjectName,
-            opt => opt.MapFrom(src => src.Project.NameProject));
-
-
+    .ForMember(dest => dest.ProjectName,
+    opt => opt.MapFrom(src => src.Project != null ? src.Project.NameProject : null));
 
             CreateMap<TaskItemDto, TaskItem>()
     .ForMember(dest => dest.ProjectId,
@@ -40,9 +42,13 @@ namespace Service
             //.ForMember(dest => dest.AssignedTo,
             //opt => opt.MapFrom(src => src.AssignedToId));       // int → int ✅
 
-            CreateMap<SubTask, SubTaskDto>();
+            //CreateMap<SubTask, SubTaskDto>();
             //.ForMember(dest => dest.TaskName,opt => opt.MapFrom(src => src.Tasks.Id))
             //.ForMember(dest => dest.AssignedTo, opt => opt.MapFrom(src => src.User.NameUser));
+
+            CreateMap<SubTask, SubTaskDto>()
+    .ForMember(dest => dest.TaskName,
+    opt => opt.MapFrom(src => src.Tasks != null ? src.Tasks.Title : null)); // ✅
             CreateMap<SubTaskDto, SubTask>();
                  
 
