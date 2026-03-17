@@ -6,6 +6,7 @@ using System.Text;
 using Service.Dto;
 using BCrypt.Net;
 using Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -31,12 +32,26 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<string>> Login(UserDto user)
     {
         List<UserDto> users = await _userService.GetAll();
-        UserDto existingUser = users.FirstOrDefault(u =>u.Email == user.Email);
+        UserDto existingUser = users.FirstOrDefault(u => u.Email == user.Email);
         if (existingUser == null || !BCrypt.Net.BCrypt.Verify(user.Password, existingUser.Password))
             return Unauthorized("The email or password is incorrect");
         string token = GenerateToken(existingUser);
         existingUser.Password = null;
         return Ok(new { token, user = existingUser });
+    }
+    [HttpGet("me")]
+    [Authorize]
+    public async Task<ActionResult<UserDto>> GetMe()
+    {
+        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (idClaim == null) return Unauthorized();
+        
+        int userId = int.Parse(idClaim);
+        var user = await _userService.GetById(userId);
+        if (user == null) return NotFound();
+        
+        user.Password = null;
+        return Ok(user);
     }
     private string GenerateToken(UserDto user)
     {
@@ -46,6 +61,7 @@ public class AuthController : ControllerBase
 
         var claims = new[]
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.NameUser),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, user.Role)
@@ -61,4 +77,5 @@ public class AuthController : ControllerBase
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    
 }
