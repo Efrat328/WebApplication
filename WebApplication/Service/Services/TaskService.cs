@@ -36,6 +36,7 @@ namespace Service.Services
                     throw new Exception("The Title is already exists");
             }
             item.Status = TaskStatus.Open;
+            item.AssignedTo = null;
             if (item.Deadline < DateTime.Now)
                 throw new Exception("The deadline must be in the future");
             if ((item.Deadline - DateTime.Now).Days < item.Expected)

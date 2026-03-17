@@ -23,7 +23,7 @@ namespace Service.Dto
         public string Title { get; set; }
         public string Description { get; set; }
         public int Expected { get; set; }
-        public int AssignedTo { get; set; }
+        public int? AssignedTo { get; set; }
         //public int AssignedToId { get; set; }   // for save (FK)
 
         public TaskPriorityDto Priority { get; set; }

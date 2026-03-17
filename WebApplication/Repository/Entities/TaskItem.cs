@@ -30,8 +30,7 @@ namespace Repository.Entities
         public string Title { get; set; }
         [MaxLength(500)]
         public string Description { get; set; }
-        [Required]
-        public int AssignedTo { get; set; }
+        public int? AssignedTo { get; set; }
         public TaskPriority Priority { get; set; }
         [Range(1, 100)]
         public int Expected { get; set; }//expected time to complete in days

@@ -61,7 +61,7 @@ namespace Service.Services
                 subTask.Title = item.Title;
                 subTask.Description = item.Description;
                 subTask.AssignedTo = item.AssignedTo;
-                subTask.Deadline = item.Deadline;
+                //subTask.Deadline = item.Deadline;
                 subTask.Status = item.Status;
                 await _repository.UpdateItem(_mapper.Map<SubTask>(subTask));
             }

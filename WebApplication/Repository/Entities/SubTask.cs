@@ -32,8 +32,8 @@ namespace Repository.Entities
         [Required]
         public SubTaskStatus Status { get; set; }
 
-        [Required]
-        public DateTime Deadline { get; set; }
+        //[Required]
+        //public DateTime Deadline { get; set; }
 
         [Required]
         public DateTime CompletedAt { get; set; }
