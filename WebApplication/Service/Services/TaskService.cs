@@ -40,7 +40,11 @@ namespace Service.Services
             if (item.Deadline < DateTime.Now)
                 throw new Exception("The deadline must be in the future");
             if ((item.Deadline - DateTime.Now).Days < item.Expected)
+            {
                 item.Priority = TaskPriorityDto.High;
+            }
+                
+
             else if ((item.Deadline - DateTime.Now).Days < item.Expected * 2)
                 item.Priority = TaskPriorityDto.Low;
             else item.Priority = TaskPriorityDto.Medium;
@@ -57,6 +61,8 @@ namespace Service.Services
             }
             taskItem.Status = TaskStatus.Canceled;
             await _repository.UpdateItem(taskItem);
+
+
         }
         public async Task<List<TaskItemDto>> GetAll()
         {
@@ -83,25 +89,27 @@ namespace Service.Services
             if (taskItem.Status == TaskStatus.Completed)
             {
                 taskItem.CompletedAt = DateTime.Now;
-                
+
             }
             await _repository.UpdateItem(taskItem);
+            if (item.Priority == TaskPriorityDto.High)
+                await SplitIfHighPriority(id);
 
         }
         //public void UpdateStatus(int id, TaskStatus status)
-        public async Task UpdatePriority(int id,  TaskItemDto item)
+        public async Task UpdatePriority(int id, TaskItemDto item)
         {
             TaskItem taskItem = await _repository.GetById(id);
             List<SubTask> subTasks = taskItem.SubTasks.ToList();
-            int count = 0,completeSubTask=0,score=0,days;
+            int count = 0, completeSubTask = 0, score = 0, days;
             foreach (var subTask in subTasks)
             {
                 if (subTask.Status == SubTaskStatus.Completed)
-                    count++;    
+                    count++;
             }
-            completeSubTask=(subTasks.Count/count)*100;
+            completeSubTask = (subTasks.Count / count) * 100;
             days = (taskItem.Deadline - DateTime.Now).Days;
-            score =days/(taskItem.Expected*(1-completeSubTask));
+            score = days / (taskItem.Expected * (1 - completeSubTask));
             if (score < 1)
                 item.Priority = TaskPriorityDto.High;
             else if (score <= 2)
@@ -109,5 +117,41 @@ namespace Service.Services
             else
                 item.Priority = TaskPriorityDto.Low;
         }
+        public async Task SplitIfHighPriority(int id)
+        {
+            TaskItem original = await _repository.GetById(id);
+            if (original == null) throw new ArgumentNullException(nameof(id));
+    
+            // רק אם פריוריטי High
+            if (original.Priority != TaskPriority.High) return;
+
+            var pendingSubTasks = original.SubTasks
+            .Where(st => st.Status == SubTaskStatus.Open)
+                    .ToList();
+
+            if (!pendingSubTasks.Any()) return;
+
+            // משימה חדשה עם תתי המשימות שלא הושלמו
+            var newTask = new TaskItem
+            {
+                ProjectId   = original.ProjectId,
+                Title       = original.Title + " (המשך)",
+                Description = original.Description,
+                Expected    = (original.Expected/original.SubTasks.Count)*pendingSubTasks.Count,
+                Priority    = TaskPriority.High,
+                Status      = TaskStatus.Open,
+                AssignedTo  = null,           // חוזרת ללוח
+                StartedAt   = DateTime.Now,
+                Deadline    = original.Deadline,
+                SubTasks    = pendingSubTasks
+            };
+
+            // מבטל אותם מהמשימה המקורית
+            foreach (var st in pendingSubTasks)
+                st.Status = SubTaskStatus.Canceled;
+
+            await _repository.AddItem(newTask);
+            await _repository.UpdateItem(original);
+        }   
     }
 }
