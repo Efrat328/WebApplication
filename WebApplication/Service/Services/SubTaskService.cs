@@ -18,12 +18,14 @@ namespace Service.Services
         private readonly IRepository<SubTask> _repository;
         private readonly HistoryService _historyService;
         private readonly IMapper _mapper;
+        private readonly TaskService _taskService;
 
-        public SubTaskService(IRepository<SubTask> repository, IMapper mapper, HistoryService historyService)
+        public SubTaskService(IRepository<SubTask> repository, IMapper mapper, HistoryService historyService, TaskService taskService)
         {
             this._repository = repository;
             this._mapper = mapper;
             this._historyService = historyService;
+            this._taskService = taskService;
         }
         public async Task<SubTaskDto> AddItem(SubTaskDto item)
         {
@@ -31,10 +33,20 @@ namespace Service.Services
             List<SubTaskDto> subTasks = await GetAll();
             foreach (SubTaskDto subTask in subTasks)
             {
-            if (subTask.Title == item.Title)
-                throw new Exception("This subTask is already exists");
+                if (subTask.Title == item.Title)
+                    throw new Exception("This subTask is already exists");
             }
-            return _mapper.Map<SubTaskDto>(await _repository.AddItem(_mapper.Map<SubTask>(item)));
+            var priorTask = await _taskService.GetPriority(item.TaskId);
+            //if(priorTask==TaskPriority.High)
+
+            
+                //throw new Exception("The TaskId is not exists");
+            var saved = await _repository.AddItem(_mapper.Map<SubTask>(item));
+    
+            // אחר כך מפצל
+            await _taskService.SplitIfHighPriority(item.TaskId);
+    
+            return _mapper.Map<SubTaskDto>(saved);
         }
         public async Task DeleteItem(int id)
         {

@@ -42,14 +42,21 @@ namespace Service.Services
             if ((item.Deadline - DateTime.Now).Days < item.Expected)
             {
                 item.Priority = TaskPriorityDto.High;
+                //await SplitIfHighPriority(item.Id);        
             }
-                
+
 
             else if ((item.Deadline - DateTime.Now).Days < item.Expected * 2)
                 item.Priority = TaskPriorityDto.Low;
             else item.Priority = TaskPriorityDto.Medium;
             item.StartedAt = DateTime.Now;
-            return _mapper.Map<TaskItemDto>(await _repository.AddItem(_mapper.Map<TaskItem>(item)));
+            var savedTask = await _repository.AddItem(_mapper.Map<TaskItem>(item));
+
+            // אם High ויש תתי משימות — מפצל
+            if (item.Priority == TaskPriorityDto.High)
+                await SplitIfHighPriority(savedTask.Id);
+
+            return _mapper.Map<TaskItemDto>(savedTask);
         }
         public async Task DeleteItem(int id)
         {
@@ -84,13 +91,14 @@ namespace Service.Services
             taskItem.AssignedTo = item.AssignedTo;  // int from-DTO
             taskItem.Title = item.Title;
             taskItem.Status = item.Status;
-            //taskItem.Priority = item.Priority;
+
             taskItem.Deadline = item.Deadline;
             if (taskItem.Status == TaskStatus.Completed)
             {
                 taskItem.CompletedAt = DateTime.Now;
 
             }
+            await UpdatePriority(id, item);
             await _repository.UpdateItem(taskItem);
             if (item.Priority == TaskPriorityDto.High)
                 await SplitIfHighPriority(id);
@@ -107,6 +115,7 @@ namespace Service.Services
                 if (subTask.Status == SubTaskStatus.Completed)
                     count++;
             }
+            if (count == 0) return;
             completeSubTask = (subTasks.Count / count) * 100;
             days = (taskItem.Deadline - DateTime.Now).Days;
             score = days / (taskItem.Expected * (1 - completeSubTask));
@@ -121,37 +130,67 @@ namespace Service.Services
         {
             TaskItem original = await _repository.GetById(id);
             if (original == null) throw new ArgumentNullException(nameof(id));
-    
-            // רק אם פריוריטי High
-            if (original.Priority != TaskPriority.High) return;
 
-            var pendingSubTasks = original.SubTasks
+            var allTasks = await _repository.GetAll();
+    
+            // מצא את המשימה האחרונה בשרשרת שעדיין לא פוצלה
+            TaskItem target = original;
+            while (true)
+            {
+                bool alreadySplit = allTasks.Any(t => t.Title == target.Title + " (המשך)");
+                if (!alreadySplit) break; // מצאנו את הקצה
+        
+                // עבור למשימה הבאה בשרשרת
+                target = allTasks.First(t => t.Title == target.Title + " (המשך)");
+                target = await _repository.GetById(target.Id); // טען עם SubTasks
+            }
+
+            var pendingSubTasks = target.SubTasks
             .Where(st => st.Status == SubTaskStatus.Open)
-                    .ToList();
+            .ToList();
 
             if (!pendingSubTasks.Any()) return;
 
-            // משימה חדשה עם תתי המשימות שלא הושלמו
-            var newTask = new TaskItem
+            var firstHalf  = pendingSubTasks.Take(pendingSubTasks.Count / 2).ToList();
+            var secondHalf = pendingSubTasks.Skip(pendingSubTasks.Count / 2).ToList();
+
+            var newTask1 = new TaskItem
             {
-                ProjectId   = original.ProjectId,
-                Title       = original.Title + " (המשך)",
-                Description = original.Description,
-                Expected    = (original.Expected/original.SubTasks.Count)*pendingSubTasks.Count,
-                Priority    = TaskPriority.High,
+                ProjectId   = target.ProjectId,
+                Title       = target.Title + " (המשך)",
+                Description = target.Description,
+                Expected    = (target.Expected / target.SubTasks.Count) * firstHalf.Count,
                 Status      = TaskStatus.Open,
-                AssignedTo  = null,           // חוזרת ללוח
+                AssignedTo  = null,
                 StartedAt   = DateTime.Now,
-                Deadline    = original.Deadline,
-                SubTasks    = pendingSubTasks
+                Deadline    = target.Deadline,
+                SubTasks    = firstHalf
+            };
+            var newTask2 = new TaskItem
+            {
+                ProjectId   = target.ProjectId,
+                Title       = target.Title + " (המשך נוסף)",
+                Description = target.Description,
+                Expected    = (target.Expected / target.SubTasks.Count) * secondHalf.Count,
+                Status      = TaskStatus.Open,
+                AssignedTo  = null,
+                StartedAt   = DateTime.Now,
+                Deadline    = target.Deadline,
+                SubTasks    = secondHalf
             };
 
-            // מבטל אותם מהמשימה המקורית
             foreach (var st in pendingSubTasks)
-                st.Status = SubTaskStatus.Canceled;
+            st.Status = SubTaskStatus.Canceled;
 
-            await _repository.AddItem(newTask);
-            await _repository.UpdateItem(original);
-        }   
+            await _repository.AddItem(newTask1);
+            await _repository.AddItem(newTask2);
+            await _repository.UpdateItem(target);
+        } 
+        public async Task<TaskPriority> GetPriority(int id)
+        {
+            TaskItem task = await _repository.GetById(id);
+            if (task == null) throw new ArgumentNullException(nameof(id));
+            return task.Priority;
+        }
     }
 }
