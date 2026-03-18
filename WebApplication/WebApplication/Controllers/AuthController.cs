@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,11 +22,14 @@ public class AuthController : ControllerBase
 
     }
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Register(UserDto user)
+    
+    public async Task<ActionResult<object>> Register(UserDto user)
     {
-        //user.Role = "user";
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-        return await _userService.AddItem(user);
+        var newUser = await _userService.AddItem(user);
+        string token = GenerateToken(newUser);
+        newUser.Password = null;
+        return Ok(new { token, user = newUser });  // ✅ מחזיר token + user
     }
     [HttpPost("login")]
     public async Task<ActionResult<string>> Login(UserDto user)
