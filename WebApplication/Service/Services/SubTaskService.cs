@@ -10,6 +10,7 @@ using Repository.Interfaces;
 using Repository.Repositories;
 using Service.Dto;
 using Service.Interface;
+using TaskStatus = Repository.Entities.TaskStatus;
 
 namespace Service.Services
 {
@@ -76,11 +77,36 @@ namespace Service.Services
                 //subTask.Deadline = item.Deadline;
                 subTask.Status = item.Status;
                 await _repository.UpdateItem(_mapper.Map<SubTask>(subTask));
+                await UpdateParentTaskStatus(subTask.TaskId);
             }
             else
             {
                 throw new ArgumentNullException(nameof(id));
             }
-}
+        }
+        private async Task UpdateParentTaskStatus(int taskId)
+        {
+            var taskItemDto = await _taskService.GetById(taskId);
+            if (taskItemDto == null) return;
+
+            // שליפת כל התתי משימות של המשימה
+            var allSubTasks = (await GetAll())
+                .Where(st => st.TaskId == taskId && st.Status != (SubTaskStatus)3) // לא מבוטלות
+                .ToList();
+
+            if (!allSubTasks.Any()) return;
+
+            TaskStatus newStatus;
+
+            if (allSubTasks.All(st => st.Status == SubTaskStatus.Completed))
+                newStatus = TaskStatus.Completed;
+            else if (allSubTasks.Any(st => st.Status == SubTaskStatus.InProgress))
+                newStatus = TaskStatus.InProgress;
+            else
+                newStatus = TaskStatus.Open;
+
+            taskItemDto.Status = newStatus;
+            await _taskService.UpdateItem(taskId, taskItemDto);
+        }
     }
 }
