@@ -21,7 +21,9 @@ builder.Services.AddScoped<IRepository<Project>, ProjectRepository>();
 builder.Services.AddScoped<IRepository<TaskItem>, TaskItemRepository>();
 builder.Services.AddScoped<IRepository<SubTask>, SubTaskRepository>();
 builder.Services.AddScoped<IRepository<History>, HistoryRepository>();
+
 // Add services to the container.
+builder.Services.AddHostedService<PriorityUpdateService>();
 
 builder.Services.AddScoped<IService<UserDto>, UserService>();
 builder.Services.AddScoped<IService<ProjectDto>, ProjectService>();
