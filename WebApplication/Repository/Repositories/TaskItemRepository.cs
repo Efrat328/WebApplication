@@ -35,6 +35,8 @@ namespace Repository.Repositories
         {
             return await _context.Tasks
                 .Include(t => t.SubTasks)
+                .Include(t => t.Project)  // ✅ הוספנו
+                .Include(t => t.User)
                 .FirstOrDefaultAsync(x => x.Id == id);
 }
        public async Task UpdateItem(TaskItem item)

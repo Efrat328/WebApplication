@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service.Dto;
 using Service.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -35,12 +35,13 @@ public class TaskItemController:ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateItem(int id, TaskItemDto item)
+    
+    public async Task<ActionResult<TaskItemDto>> UpdateItem(int id, TaskItemDto item)
     {
         await _service.UpdateItem(id, item);
-        return NoContent();
+        return Ok(await _service.GetById(id));  // ✅
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteItem(int id)
     {

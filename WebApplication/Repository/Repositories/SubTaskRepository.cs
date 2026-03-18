@@ -24,11 +24,13 @@ namespace Repository.Repositories
         }
         public async Task<List<SubTask>> GetAll()
         {
-            return await _context.SubTasks.ToListAsync();
+            return await _context.SubTasks.Include(s => s.Tasks) 
+        .Include(s => s.User).ToListAsync();
         }
         public async Task<SubTask> GetById(int id)
         {
-            return await _context.SubTasks.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.SubTasks.Include(s => s.Tasks)
+            .Include(s => s.User).FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task UpdateItem(SubTask item)
         {

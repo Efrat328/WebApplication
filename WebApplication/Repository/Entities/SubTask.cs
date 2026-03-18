@@ -27,8 +27,8 @@ namespace Repository.Entities
         [MaxLength(100)]
         public string Description { get; set; }
 
-        [Required]
-        public int AssignedTo { get; set; }
+        
+        public int? AssignedTo { get; set; }
 
         [Required]
         public SubTaskStatus Status { get; set; }
