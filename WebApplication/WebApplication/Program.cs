@@ -26,6 +26,7 @@ builder.Services.AddScoped<IRepository<History>, HistoryRepository>();
 builder.Services.AddScoped<IService<UserDto>, UserService>();
 builder.Services.AddScoped<IService<ProjectDto>, ProjectService>();
 builder.Services.AddScoped<IService<TaskItemDto>, TaskService>();
+builder.Services.AddScoped<TaskService>(); // הוסף את זה כדי שתוכל להשתמש בו ב-SubTaskService
 builder.Services.AddScoped<IService<SubTaskDto>, SubTaskService>();
 builder.Services.AddScoped<IService<HistoryDto>, HistoryService>();
 builder.Services.AddControllers();
