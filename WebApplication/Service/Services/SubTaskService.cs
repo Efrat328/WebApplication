@@ -30,23 +30,19 @@ namespace Service.Services
         }
         public async Task<SubTaskDto> AddItem(SubTaskDto item)
         {
-            if (item == null) throw new ArgumentNullException("item");
-            List<SubTaskDto> subTasks = await GetAll();
-            foreach (SubTaskDto subTask in subTasks)
-            {
-                if (subTask.Title == item.Title)
-                    throw new Exception("This subTask is already exists");
-            }
-            var priorTask = await _taskService.GetPriority(item.TaskId);
-            //if(priorTask==TaskPriority.High)
+            if (item == null) throw new ArgumentNullException(nameof(item));
 
-            
-                //throw new Exception("The TaskId is not exists");
+            var subTasks = await GetAll();
+            if (subTasks.Any(st => st.Title == item.Title))
+                throw new Exception("This subTask already exists");
+
+            // הוספה
             var saved = await _repository.AddItem(_mapper.Map<SubTask>(item));
-    
-            // אחר כך מפצל
-            await _taskService.SplitIfHighPriority(item.TaskId);
-    
+
+            // 🔥 קריטי – לעדכן את המשימה כדי לחשב מחדש פריוריטי + פיצול
+            var taskDto = await _taskService.GetById(item.TaskId);
+            await _taskService.UpdateItem(item.TaskId, taskDto);
+
             return _mapper.Map<SubTaskDto>(saved);
         }
         public async Task DeleteItem(int id)
