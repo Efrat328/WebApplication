@@ -98,40 +98,18 @@ namespace Service.Services
         public async Task UpdatePriority(int id, TaskItemDto item)
         {
             var taskItem = await _repository.GetById(id);
-            var subTasks = taskItem.SubTasks.ToList();
-
-            if (!subTasks.Any()) return;
-
-            int completedCount = subTasks.Count(st => st.Status == SubTaskStatus.Completed);
-            if (completedCount == 0) return;
-
-            double completedRatio = (double)completedCount / subTasks.Count;
-            double remaining = 1.0 - completedRatio;
-
-            if (remaining <= 0)
-            {
-                item.Priority = TaskPriorityDto.Low;
-                return;
-            }
-
-            double daysLeft = (taskItem.Deadline - DateTime.Now).TotalDays;
-            double score = daysLeft / (taskItem.Expected * remaining);
-
-            if (score < 1)
-                item.Priority = TaskPriorityDto.High;
-            else if (score <= 2)
-                item.Priority = TaskPriorityDto.Medium;
-            else
-                item.Priority = TaskPriorityDto.Low;
+            //var subTasks = taskItem.SubTasks.ToList();
+            item.Priority = CalculatePriority(taskItem);
+            item.Priority = (TaskPriorityDto)(await _repository.GetById(id)).Priority;
             if (item.Priority == TaskPriorityDto.High)
                 await SplitIfHighPriority(id);
         }
 
         public async Task SplitIfHighPriority(int id)
         {
-            
+
             var task = await _repository.GetById(id);
-            
+
             if (task == null) throw new ArgumentNullException(nameof(id));
 
             if (task.Priority != TaskPriority.High)
@@ -192,7 +170,7 @@ namespace Service.Services
                 Title = task.Title + " (המשך)",
                 Description = task.Description,
                 Status = TaskStatus.Open,
-                Priority = TaskPriority.High, // 🔥 חשוב
+                
                 StartedAt = DateTime.Now,
                 Deadline = task.Deadline,
                 SubTasks = firstHalf.Select(st => new SubTask
@@ -203,6 +181,7 @@ namespace Service.Services
                 }).ToList(),
                 Expected = newExpected1
             };
+            newTask1.Priority = _mapper.Map<TaskPriority>(CalculatePriority(newTask1));
 
             var newTask2 = new TaskItem
             {
@@ -221,6 +200,8 @@ namespace Service.Services
                 }).ToList(),
                 Expected = newExpected2
             };
+            newTask2.Priority = _mapper.Map<TaskPriority>(CalculatePriority(newTask2));
+
 
             foreach (var st in pendingSubTasks)
                 st.Status = SubTaskStatus.Canceled;
@@ -232,5 +213,27 @@ namespace Service.Services
             await SplitIfHighPriority(newTask1.Id);
             await SplitIfHighPriority(newTask2.Id);
         }
+
+        private TaskPriorityDto CalculatePriority(TaskItem taskItem)
+        {
+            var subTasks = taskItem.SubTasks.ToList();
+            if (!subTasks.Any()) return TaskPriorityDto.Medium; // או Open/Low לפי החלטה שלך
+
+            int completedCount = subTasks.Count(st => st.Status == SubTaskStatus.Completed);
+            if (completedCount == 0) return TaskPriorityDto.Medium;
+
+            double completedRatio = (double)completedCount / subTasks.Count;
+            double remaining = 1.0 - completedRatio;
+
+            if (remaining <= 0) return TaskPriorityDto.Low;
+
+            double daysLeft = (taskItem.Deadline - DateTime.Now).TotalDays;
+            double score = daysLeft / (taskItem.Expected * remaining);
+
+            if (score < 1) return TaskPriorityDto.High;
+            if (score <= 2) return TaskPriorityDto.Medium;
+            return TaskPriorityDto.Low;
+        }
+
     }
 }
