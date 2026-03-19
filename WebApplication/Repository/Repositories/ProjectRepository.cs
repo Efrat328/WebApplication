@@ -30,7 +30,9 @@ namespace Repository.Repositories
         }
         public async Task<Project> GetById(int id)
         {
-            return await _context.Projects.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Projects
+                .Include(p => p.Tasks)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task UpdateItem(Project item)
         {

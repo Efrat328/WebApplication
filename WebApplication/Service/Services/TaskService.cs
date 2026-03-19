@@ -129,7 +129,9 @@ namespace Service.Services
 
         public async Task SplitIfHighPriority(int id)
         {
+            
             var task = await _repository.GetById(id);
+            
             if (task == null) throw new ArgumentNullException(nameof(id));
 
             if (task.Priority != TaskPriority.High)
@@ -181,6 +183,8 @@ namespace Service.Services
 
             var firstHalf = pendingSubTasks.Take(half).ToList();
             var secondHalf = pendingSubTasks.Skip(half).ToList();
+            var newExpected1 = Math.Max(1, task.Expected - (int)(task.Expected * ((double)firstHalf.Count / pendingSubTasks.Count)));
+            var newExpected2 = Math.Max(1, task.Expected - (int)(task.Expected * ((double)secondHalf.Count / pendingSubTasks.Count)));
 
             var newTask1 = new TaskItem
             {
@@ -196,7 +200,8 @@ namespace Service.Services
                     Title = st.Title,
                     Description = st.Description,
                     Status = SubTaskStatus.Open
-                }).ToList()
+                }).ToList(),
+                Expected = newExpected1
             };
 
             var newTask2 = new TaskItem
@@ -213,7 +218,8 @@ namespace Service.Services
                     Title = st.Title,
                     Description = st.Description,
                     Status = SubTaskStatus.Open
-                }).ToList()
+                }).ToList(),
+                Expected = newExpected2
             };
 
             foreach (var st in pendingSubTasks)
