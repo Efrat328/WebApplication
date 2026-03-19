@@ -27,6 +27,7 @@ public class SubTaskController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<SubTaskDto>> AddItem(SubTaskDto item)
     {
         try

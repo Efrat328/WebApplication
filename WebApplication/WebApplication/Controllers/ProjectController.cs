@@ -27,8 +27,9 @@ public class ProjectController:ControllerBase
     {
         return await _service.GetById(id);
     }
-    
+
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<ProjectDto>> AddItem(ProjectDto item)
     {
         try

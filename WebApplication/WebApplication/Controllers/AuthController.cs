@@ -34,6 +34,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<string>> Login(UserDto user)
     {
+        
         List<UserDto> users = await _userService.GetAll();
         UserDto existingUser = users.FirstOrDefault(u => u.Email == user.Email);
         if (existingUser == null || !BCrypt.Net.BCrypt.Verify(user.Password, existingUser.Password))
