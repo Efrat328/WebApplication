@@ -31,20 +31,46 @@ public class ProjectController:ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProjectDto>> AddItem(ProjectDto item)
     {
-        return await _service.AddItem(item);
+        try
+        {
+            var result = await _service.AddItem(item);
+            return Ok(result); // הכל טוב
+        }
+        catch (Exception ex)
+        {
+            // מחזיר 400 עם הודעה ידידותית למשתמש
+            return BadRequest(new { message = ex.Message });
+        }
     }
     
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateItem(int id, ProjectDto item)
     {
-        await _service.UpdateItem(id, item);
-        return NoContent();
+        try        {
+            await _service.UpdateItem(id, item);
+            var result = await _service.GetById(id);
+            if (result == null)
+                return NotFound(new { message = "לא נמצא פרויקט עם מזהה זה" });
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteItem(int id)
     {
-        await _service.DeleteItem(id);
-        return NoContent();
+        try
+        {
+             await _service.DeleteItem(id);
+             return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

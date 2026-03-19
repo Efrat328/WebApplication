@@ -21,31 +21,59 @@ public class TaskItemController:ControllerBase
     {
         return await _service.GetAll();
     }
-    
+
     [HttpGet("{id}")]
     public async Task<ActionResult<TaskItemDto>> GetById(int id)
     {
         return await _service.GetById(id);
     }
     
+
     [HttpPost]
     public async Task<ActionResult<TaskItemDto>> AddItem(TaskItemDto item)
     {
-        return await _service.AddItem(item);
+        try
+        {
+            var result = await _service.AddItem(item);
+            return Ok(result); // הכל טוב
+        }
+        catch (Exception ex)
+        {
+            // מחזיר 400 עם הודעה ידידותית למשתמש
+            return BadRequest(new { message = ex.Message });
+        }
     }
-    
+
     [HttpPut("{id}")]
-    
+
     public async Task<ActionResult<TaskItemDto>> UpdateItem(int id, TaskItemDto item)
     {
-        await _service.UpdateItem(id, item);
-        return Ok(await _service.GetById(id));  // ✅
+        try
+        {
+            await _service.UpdateItem(id, item);
+            var result = await _service.GetById(id);
+            if (result == null)
+                return NotFound(new { message = "לא נמצאה משימה עם מזהה זה" });
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteItem(int id)
     {
-        await _service.DeleteItem(id);
-        return NoContent();
+        try
+        {
+            await _service.DeleteItem(id);
+            return NoContent(); // או Ok עם הודעה
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }
